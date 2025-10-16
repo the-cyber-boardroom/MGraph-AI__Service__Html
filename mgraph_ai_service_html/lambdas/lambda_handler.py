@@ -13,9 +13,9 @@ def clear_osbot_modules():                                       # Clean up osbo
 
 clear_osbot_modules()
 
-from mgraph_ai_service_html.html__fast_api.Html__Fast_API import Html__Fast_API
+from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API import Html_Service__Fast_API
 
-with Html__Fast_API() as _:
+with Html_Service__Fast_API() as _:
     _.setup()
     handler = _.handler()
     app     = _.app()

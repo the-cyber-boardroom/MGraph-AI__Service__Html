@@ -1,9 +1,11 @@
-from osbot_fast_api.api.routes.Fast_API__Routes                                         import Fast_API__Routes
-from starlette.responses                                                                import HTMLResponse, PlainTextResponse
-from mgraph_ai_service_html.core.Html__Direct__Transformations                          import Html__Direct__Transformations
-from mgraph_ai_service_html.schemas.Schema__Html__Requests                              import Schema__Dict__To__Html__Request
-from mgraph_ai_service_html.schemas.Schema__Html__Requests                              import Schema__Dict__To__Text__Nodes__Request, Schema__Dict__To__Text__Nodes__Response
-from mgraph_ai_service_html.schemas.Schema__Html__Requests                              import Schema__Dict__To__Lines__Request
+from osbot_fast_api.api.routes.Fast_API__Routes                                                 import Fast_API__Routes
+from starlette.responses                                                                        import HTMLResponse, PlainTextResponse
+from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations                   import Html__Direct__Transformations
+from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Html__Request         import Schema__Dict__To__Html__Request
+from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Lines__Request        import Schema__Dict__To__Lines__Request
+from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Text__Nodes__Request  import Schema__Dict__To__Text__Nodes__Request
+from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Text__Nodes__Response import Schema__Dict__To__Text__Nodes__Response
+
 
 class Routes__Dict(Fast_API__Routes):                           # Dict-based operations
     tag                        : str                       = 'dict'

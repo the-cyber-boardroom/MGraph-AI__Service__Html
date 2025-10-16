@@ -3,7 +3,7 @@ from osbot_utils.helpers.html.transformers.Html__To__Html_Dict                  
 from osbot_utils.type_safe.Type_Safe                                                        import Type_Safe
 from osbot_utils.utils.Misc                                                                 import str_md5
 
-DEFAULT_MAX_DEPTH = 256
+DEFAULT_MAX_DEPTH = 256                                         # todo: move to consts file and rename to include reference to Text Nodes extraction
 
 class Html__Extract_Text_Nodes(Type_Safe):                      # Extract text nodes from HTML structure
     html_dict           : Dict      = None                      # Can be set directly
