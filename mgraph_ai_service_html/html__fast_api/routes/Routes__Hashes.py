@@ -1,10 +1,8 @@
 from osbot_fast_api.api.routes.Fast_API__Routes                                         import Fast_API__Routes
-from starlette.responses                                                                   import HTMLResponse
-from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations              import Html__Direct__Transformations
-from mgraph_ai_service_html.html__fast_api.schemas.Schema__Html__Transformations           import Schema__Hashes__To__Html__Request
-from osbot_utils.helpers.html.transformers.Html__To__Html_Dict                             import STRING__SCHEMA_NODES, STRING__SCHEMA_TEXT
-from typing                                                                                import Dict
-
+from starlette.responses                                                                import HTMLResponse
+from mgraph_ai_service_html.core.Html__Direct__Transformations                          import Html__Direct__Transformations
+from mgraph_ai_service_html.schemas.Schema__Html__Requests                              import Schema__Hashes__To__Html__Request
+from typing                                                                             import Dict
 
 class Routes__Hashes(Fast_API__Routes):                         # Hash reconstruction
     tag                        : str                       = 'hashes'
@@ -16,31 +14,28 @@ class Routes__Hashes(Fast_API__Routes):                         # Hash reconstru
     
     def to__html(self, request: Schema__Hashes__To__Html__Request
                   ) -> HTMLResponse:
-        modified_dict = self._apply_hash_mapping(request.html_dict, request.hash_mapping)  # Merge hash_mapping into html_dict
-        html          = self.html_direct_transformations.html_dict__to__html(modified_dict)  # Reconstruct HTML
+        # Merge hash_mapping into html_dict
+        modified_dict = self._apply_hash_mapping(request.html_dict, request.hash_mapping)
+        
+        # Reconstruct HTML
+        html = self.html_direct_transformations.html_dict__to__html(modified_dict)
         
         return HTMLResponse(content=html, status_code=200)
     
-    def _apply_hash_mapping(self, html_dict      : Dict         ,  # Apply hash replacements
-                                  hash_mapping   : Dict[str, str]
+    def _apply_hash_mapping(self, html_dict: Dict               ,# Apply hash replacements
+                                  hash_mapping: Dict[str, str]
                             ) -> Dict:
-        if not isinstance(html_dict, dict):
-            return html_dict
+        # Implementation: traverse html_dict, replace text nodes where hash matches
+        # This is how external services (Semantic_Text) modify HTML
+        from osbot_utils.helpers.html.transformers.Html_Dict__To__Html import Html_Dict__To__Html
+        from osbot_utils.helpers.html.transformers.Html__To__Html_Dict import Html__To__Html_Dict
         
-        result = html_dict.copy()                                # Create copy to avoid modifying original
+        # Convert to HTML, do replacements, convert back
+        html = Html_Dict__To__Html(root=html_dict).convert()
+        for hash_value, replacement_text in hash_mapping.items():
+            html = html.replace(hash_value, replacement_text)
         
-        if result.get("type") == STRING__SCHEMA_TEXT:            # If this is a text node, check if we should replace it
-            data = result.get("data", "")
-            if data in hash_mapping:
-                result["data"] = hash_mapping[data]
-        
-        if STRING__SCHEMA_NODES in result:                       # Recursively process children
-            result[STRING__SCHEMA_NODES] = [
-                self._apply_hash_mapping(child, hash_mapping)
-                for child in result[STRING__SCHEMA_NODES]
-            ]
-        
-        return result
+        return Html__To__Html_Dict(html=html).convert()
     
     def setup_routes(self):
         self.add_route_post(self.to__html)
