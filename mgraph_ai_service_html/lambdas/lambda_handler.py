@@ -1,7 +1,6 @@
 from osbot_aws.aws.lambda_.boto3__lambda import load_dependencies
 
-LAMBDA_DEPENDENCIES__HTML_SERVICE = ['osbot-fast-api-serverless==v1.19.0',
-                                     'memory-fs==v0.24.0'                ]
+LAMBDA_DEPENDENCIES__HTML_SERVICE = ['osbot-fast-api-serverless==v1.23.0']
 
 load_dependencies(LAMBDA_DEPENDENCIES__HTML_SERVICE)
 

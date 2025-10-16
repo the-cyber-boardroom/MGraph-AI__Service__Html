@@ -1,5 +1,5 @@
 from osbot_fast_api_serverless.deploy.Deploy__Serverless__Fast_API  import Deploy__Serverless__Fast_API
-from mgraph_ai_service_html.lambdas.html__handler import run, LAMBDA_DEPENDENCIES__HTML_SERVICE
+from mgraph_ai_service_html.lambdas.lambda_handler import run, LAMBDA_DEPENDENCIES__HTML_SERVICE
 
 LAMBDA_NAME__HTML_SERVICE = 'mgraph-ai-service-html'
 
