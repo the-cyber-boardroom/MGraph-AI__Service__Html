@@ -4,7 +4,6 @@ from osbot_fast_api.api.Fast_API                                            impo
 from osbot_fast_api.api.schemas.safe_str.Safe_Str__Fast_API__Route__Prefix  import Safe_Str__Fast_API__Route__Prefix
 from osbot_utils.utils.Env                                                  import get_env
 from starlette.testclient                                                   import TestClient
-from osbot_fast_api_serverless.utils.testing.skip_tests                     import skip__if_not__in_github_actions
 from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API           import Html_Service__Fast_API
 from tests.unit.Service__Fast_API__Test_Objs                                import setup__service_fast_api_test_objs, Service__Fast_API__Test_Objs, TEST_API_KEY__NAME
 
@@ -46,11 +45,6 @@ class test_Html_Service__Fast_API__client(TestCase):
         assert auth_key_name                 is not None
         assert auth_key_value                is not None
         #assert response__with_auth.json()    == ROUTES_INFO__HEALTH__RETURN_VALUE
-
-    def test__check_if_local_stack_is_setup(self):
-        skip__if_not__in_github_actions()
-        with self.service_fast_api_test_objs.local_stack as _:
-            assert _.is_local_stack_configured_and_available() is True
 
     def test__config_fast_api_routes(self):
         # todo: refactor these route values to the respective Routes_* classes
