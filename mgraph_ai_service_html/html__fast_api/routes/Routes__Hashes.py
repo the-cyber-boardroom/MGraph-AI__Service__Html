@@ -1,8 +1,9 @@
-from osbot_fast_api.api.routes.Fast_API__Routes                                         import Fast_API__Routes
-from starlette.responses                                                                import HTMLResponse
-from mgraph_ai_service_html.core.Html__Direct__Transformations                          import Html__Direct__Transformations
-from mgraph_ai_service_html.schemas.Schema__Html__Requests                              import Schema__Hashes__To__Html__Request
-from typing                                                                             import Dict
+from osbot_fast_api.api.routes.Fast_API__Routes                                             import Fast_API__Routes
+from starlette.responses                                                                    import HTMLResponse
+from typing                                                                                 import Dict
+from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations               import Html__Direct__Transformations
+from mgraph_ai_service_html.html__fast_api.schemas.hashes.Schema__Hashes__To__Html__Request import Schema__Hashes__To__Html__Request
+
 
 class Routes__Hashes(Fast_API__Routes):                         # Hash reconstruction
     tag                        : str                       = 'hashes'

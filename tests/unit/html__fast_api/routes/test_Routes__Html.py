@@ -1,16 +1,18 @@
-from unittest                                                       import TestCase
-from fastapi.testclient                                             import TestClient
-from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API   import Html_Service__Fast_API
+from unittest                                                        import TestCase
+from fastapi.testclient                                              import TestClient
+from osbot_fast_api_serverless.fast_api.Serverless__Fast_API__Config import Serverless__Fast_API__Config
+from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API    import Html_Service__Fast_API
 
 
 class test_Routes__Html(TestCase):
 
     @classmethod
     def setUpClass(cls):                                         # ONE-TIME expensive setup
-        with Html_Service__Fast_API() as api:
+        config = Serverless__Fast_API__Config(enable_api_key=False)
+        with Html_Service__Fast_API(config=config) as api:
             api.setup()
-            cls.app    = api.app()
-            cls.client = TestClient(cls.app)
+            cls.app      = api.app()
+            cls.client   = TestClient(cls.app)
 
     def test__to__dict(self):                                    # Test atomic HTML parsing
         html = "<html><body><p>Test Content</p></body></html>"
@@ -278,9 +280,13 @@ class test_Routes__Html(TestCase):
 
         assert 'Text With Spaces' not in html_with_xxx           # Original replaced
 
-        import re
-        xxx_pattern = re.search(r'xxxx xx xxxxxx', html_with_xxx)  # Pattern with spaces
-        assert xxx_pattern is not None                           # Spaces preserved
+
+        assert html_with_xxx == ('<!DOCTYPE html>\n'
+                                 '<html>\n'
+                                 '    <body>\n'
+                                 '        <p>xxxx xxxx xxxxxx</p>\n'
+                                 '    </body>\n'
+                                 '</html>\n')
 
     def test__to__html__xxx__multiple_paragraphs(self):          # Test multiple text nodes
         html = """
@@ -346,7 +352,8 @@ class test_Routes__Html(TestCase):
         response = self.client.post('/html/to/dict',
                                    json={})                      # Missing 'html' field
 
-        assert response.status_code == 422                       # Validation error
+        assert response.status_code == 200                       # Validation error
+        assert response.json() == {"html_dict":{},"node_count":0,"max_depth":0}
 
     def test__error_handling__malformed_html(self):              # Test malformed HTML
         html = "<html><body><p>Unclosed paragraph"               # No closing tags

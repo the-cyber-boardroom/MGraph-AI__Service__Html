@@ -171,9 +171,9 @@ class test_Html__Extract_Text_Nodes(TestCase):
             _.traverse(html_dict, depth=0, parent_tag=None)
 
             texts = [node['text'] for node in _.text_elements.values()]
-            assert 'Text with spaces' in texts                   # Original text preserved
-            assert 'Another'          in texts
-            assert _.captures         == 2                       # Whitespace-only span not captured
+            assert '  Text with spaces  ' in texts                   # Original text preserved
+            assert 'Another'              in texts
+            assert _.captures             == 2                       # Whitespace-only span not captured
 
     def test__extract_from_html_dict(self):                      # Test new extraction method
         html = "<html><body><p>Test</p><div>Content</div></body></html>"

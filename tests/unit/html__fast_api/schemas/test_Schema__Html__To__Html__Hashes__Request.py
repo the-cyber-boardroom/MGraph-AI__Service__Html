@@ -1,8 +1,8 @@
-from unittest                                                                   import TestCase
-from osbot_utils.utils.Objects                                                  import base_classes
-from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
-from osbot_utils.testing.__                                                     import __
-from mgraph_ai_service_html.html__fast_api.schemas.Schema__Html__Requests      import Schema__Html__To__Html__Hashes__Request
+from unittest                                                                                   import TestCase
+from osbot_utils.utils.Objects                                                                  import base_classes
+from osbot_utils.type_safe.Type_Safe                                                            import Type_Safe
+from osbot_utils.testing.__                                                                     import __
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Hashes__Request import Schema__Html__To__Html__Hashes__Request
 
 
 class test_Schema__Html__To__Html__Hashes__Request(TestCase):

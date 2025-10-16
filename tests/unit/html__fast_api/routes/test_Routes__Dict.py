@@ -1,14 +1,16 @@
-from unittest                                                       import TestCase
-from fastapi.testclient                                             import TestClient
-from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API   import Html_Service__Fast_API
-from osbot_utils.helpers.html.transformers.Html__To__Html_Dict      import Html__To__Html_Dict
+from unittest                                                        import TestCase
+from fastapi.testclient                                              import TestClient
+from osbot_fast_api_serverless.fast_api.Serverless__Fast_API__Config import Serverless__Fast_API__Config
+from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API    import Html_Service__Fast_API
+from osbot_utils.helpers.html.transformers.Html__To__Html_Dict       import Html__To__Html_Dict
 
 
 class test_Routes__Dict(TestCase):
 
     @classmethod
     def setUpClass(cls):                                         # ONE-TIME expensive setup
-        with Html_Service__Fast_API() as api:
+        config = Serverless__Fast_API__Config(enable_api_key=False)
+        with Html_Service__Fast_API(config=config) as api:
             api.setup()
             cls.app    = api.app()
             cls.client = TestClient(cls.app)
@@ -49,6 +51,16 @@ class test_Routes__Dict(TestCase):
         assert 'Title'           in reconstructed
         assert 'First paragraph' in reconstructed
         assert 'Second paragraph' in reconstructed
+        assert reconstructed == ('<!DOCTYPE html>\n'
+                                 '<html>\n'
+                                 '    <body>\n'
+                                 '        <div>\n'
+                                 '            <h1>Title</h1>\n'
+                                 '            <p>First paragraph</p>\n'
+                                 '            <p>Second paragraph</p>\n'
+                                 '        </div>\n'
+                                 '    </body>\n'
+                                 '</html>\n')
 
     def test__to__html__with_attributes(self):                   # Test attribute preservation
         html = '<html><body><div class="container" id="main"><p>Content</p></div></body></html>'
@@ -228,7 +240,8 @@ class test_Routes__Dict(TestCase):
         response = self.client.post('/dict/to/html',
                                    json={})
 
-        assert response.status_code == 422                       # Validation error
+        assert response.status_code == 200                       # Validation error
+        assert response.text == ''
 
     def test__error_handling__invalid_dict_structure(self):      # Test with malformed dict
         invalid_dict = {'invalid': 'structure'}

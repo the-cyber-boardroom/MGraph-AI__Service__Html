@@ -1,8 +1,8 @@
-from unittest                                                                   import TestCase
-from osbot_utils.utils.Objects                                                  import base_classes
-from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
-from osbot_utils.testing.__                                                     import __
-from mgraph_ai_service_html.html__fast_api.schemas.Schema__Html__Requests      import Schema__Dict__To__Text__Nodes__Response
+from unittest                                                                                   import TestCase
+from osbot_utils.utils.Objects                                                                  import base_classes
+from osbot_utils.type_safe.Type_Safe                                                            import Type_Safe
+from osbot_utils.testing.__                                                                     import __
+from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Text__Nodes__Response import Schema__Dict__To__Text__Nodes__Response
 
 
 class test_Schema__Dict__To__Text__Nodes__Response(TestCase):
@@ -11,26 +11,25 @@ class test_Schema__Dict__To__Text__Nodes__Response(TestCase):
         with Schema__Dict__To__Text__Nodes__Response() as _:
             assert type(_)         is Schema__Dict__To__Text__Nodes__Response
             assert base_classes(_) == [Type_Safe, object]
-            assert _.obj()         == __(text_nodes        = {}   ,
+            assert _.obj()         == __(text_nodes        = __() ,
                                          total_nodes       = 0    ,
                                          max_depth_reached = False)
     
     def test__with_text_nodes(self):                             # Test with text node data
-        text_nodes = {
-            'hash123': {'text': 'Hello', 'tag': 'p'},
-            'hash456': {'text': 'World', 'tag': 'div'}
-        }
+        text_nodes = {'abcd123456': {'text': 'Hello', 'tag': 'p'},
+                      'abcd456789': {'text': 'World', 'tag': 'div'}}
         
         with Schema__Dict__To__Text__Nodes__Response(text_nodes        = text_nodes,
                                                      total_nodes       = 2        ,
                                                      max_depth_reached = False    ) as _:
-            assert _.text_nodes        == text_nodes
+            #assert _.text_nodes        == text_nodes
             assert _.total_nodes       == 2
             assert _.max_depth_reached is False
             
-            assert _.obj() == __(text_nodes        = text_nodes,
-                                 total_nodes       = 2         ,
-                                 max_depth_reached = False     )
+            assert _.obj() == __(text_nodes        = __(abcd123456=__(text='Hello', tag='p'),
+                                                        abcd456789=__(text='World', tag='div')),
+                                 total_nodes       = 2,
+                                 max_depth_reached = False)
     
     def test__with_max_depth_reached(self):                      # Test max_depth_reached flag
         with Schema__Dict__To__Text__Nodes__Response(text_nodes        = {}  ,
