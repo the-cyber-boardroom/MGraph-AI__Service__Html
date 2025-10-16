@@ -1,162 +1,152 @@
-# MGraph-AI Service Base Documentation
+# MGraph-AI__Service__Html
+
+**Version:** v0.1.0  
+**Purpose:** Pure HTML structural transformation service
 
 ## Overview
 
-MGraph-AI Service Base will be a production-ready FastAPI microservice that provides Large Language Model (BASE) capabilities through a secure, type-safe API. 
-
-## Architecture
-
-The service follows a clean architecture pattern with clear separation of concerns:
-
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   API Layer     │     │  Service Layer  │     │ Infrastructure  │
-├─────────────────┤     ├─────────────────┤     ├─────────────────┤
-│ FastAPI Routes  │────▶│ Business Logic  │────▶│ AWS Lambda      │
-│ Authentication  │     │ Type Safety     │     │ OSBot-AWS       │
-│ OpenAPI Docs    │     │ Data Validation │     │ External APIs   │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
+MGraph-AI__Service__Html is a specialized service for HTML structure manipulation. It provides fast, deterministic HTML processing operations without any LLM dependencies. This service is part of the MGraph-AI ecosystem and focuses exclusively on HTML structural transformations.
 
 ## Key Features
 
-### 1. Type Safety
-- Built on OSBot-Utils type safety framework
-- Runtime type checking and validation
-- Prevents injection attacks at the type level
+- ✅ **No LLM Dependencies** - Pure HTML processing only
+- ✅ **Type-Safe** - All operations use Type_Safe classes
+- ✅ **Serverless Ready** - Optimized for AWS Lambda deployment
+- ✅ **Atomic & Compound Operations** - Flexible API design
+- ✅ **Round-Trip Validation** - Quality assurance built-in
+- ✅ **Hash-Based Text Node Extraction** - Stable content addressing
 
-### 2. Multi-Stage Deployment
-- Development environment with auto-deployment on push to `dev` branch
-- QA environment with auto-deployment on push to `main` branch
-- Production environment with manual deployment trigger
+## Architecture
 
-### 3. AWS Lambda Optimization
-- Cold start optimization with dependency pre-loading
-- Efficient memory usage
-- Automatic scaling
+### Separation of Concerns
 
-### 4. API Security
-- API key authentication required for all endpoints
-- Environment-based configuration
-- Secure secret management
-
-## Getting Started
-
-### Prerequisites
-- Python 3.12+
-- AWS CLI configured (for deployment)
-- Docker (for LocalStack testing)
-
-### Local Development
-```bash
-# Clone the repository
-git clone https://github.com/the-cyber-boardroom/MGraph-AI__Service__Base.git
-cd MGraph-AI__Service__Base
-
-# Install dependencies
-pip install -r requirements-test.txt
-pip install -e .
-
-# Set environment variables
-export FAST_API__AUTH__API_KEY__NAME="x-api-key"
-export FAST_API__AUTH__API_KEY__VALUE="your-secret-key"
-
-# Run locally
-./scripts/run-locally.sh
 ```
-
-### Running Tests
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=mgraph_ai_service_base
-
-# Run specific test file
-pytest tests/unit/fast_api/test_Service__Fast_API__client.py
+┌───────────────────────────────────────────────┐
+│              Mitmproxy                        │
+│           (HTML Interception)                 │
+└───────────────┬───────────────────────────────┘
+                │ Raw HTML
+                ▼
+┌───────────────────────────────────────────────┐
+│      MGraph-AI__Service__Html                 │ ← THIS SERVICE
+│                                               │
+│  • HTML ↔ html_dict conversion                │
+│  • Text node extraction with stable hashes    │
+│  • HTML reconstruction from hash mappings     │
+│  • Visual transformations (hashes, xxx masks) │
+│  • Structure validation (round-trip testing)  │
+└───────────────┬───────────────────────────────┘
+                │ {hash: text} mappings
+                ▼
+┌───────────────────────────────────────────────┐
+│   MGraph-AI__Service__Semantic_Text           │ ← SEPARATE SERVICE
+│                                               │
+│  • Text → LLM ratings                         │
+│  • Sentiment analysis                         │
+│  • Topic extraction                           │
+└───────────────────────────────────────────────┘
 ```
 
 ## API Endpoints
 
-### Health Check
-- `GET /health` - Basic health check
-- `GET /health/detailed` - Detailed health status with component information
+### HTML Routes (`/html/*`)
 
-### Service Information
-- `GET /info/version` - Get current service version
-- `GET /info/status` - Get service status and environment information
+#### Atomic Operations
+- `POST /html/to/dict` - Parse HTML string into html_dict structure
+- `POST /html/to/html` - Round-trip validation (HTML → dict → HTML)
 
-## Configuration
+#### Compound Operations
+- `POST /html/to/text/nodes` - HTML → dict → text_nodes in one call
+- `POST /html/to/lines` - HTML → dict → formatted line representation
+- `POST /html/to/html/hashes` - Replace all text with hashes (visual debug)
+- `POST /html/to/html/xxx` - Replace all text with 'x' characters (privacy mask)
 
-### Environment Variables
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `FAST_API__AUTH__API_KEY__NAME` | Header name for API key | Yes |
-| `FAST_API__AUTH__API_KEY__VALUE` | API key value | Yes |
-| `AWS_REGION` | AWS region (triggers Lambda mode) | No |
-| `DEBUG` | Enable debug logging | No |
+### Dict Routes (`/dict/*`)
+- `POST /dict/to/html` - Reconstruct HTML from html_dict
+- `POST /dict/to/text/nodes` - Extract text nodes from html_dict
+- `POST /dict/to/lines` - Format html_dict as readable lines
 
-## Deployment
+### Hash Routes (`/hashes/*`)
+- `POST /hashes/to/html` - Reconstruct HTML with custom text replacements
 
-### CI/CD Pipeline
-The service uses GitHub Actions for continuous deployment:
+## Installation
 
-1. **Development** (`dev` branch)
-   - Runs unit tests
-   - Deploys to AWS Lambda dev environment
-   - Increments minor version
-
-2. **QA** (`main` branch)
-   - Runs full test suite
-   - Deploys to AWS Lambda QA environment
-   - Increments major version
-
-3. **Production** (manual trigger)
-   - Runs full test suite
-   - Requires manual approval
-   - Deploys to AWS Lambda production environment
-
-### AWS Lambda Configuration
-```yaml
-Runtime: python3.12
-Handler: mgraph_ai_service_base.fast_api.lambda_handler.run
-MemorySize: 512
-Timeout: 30
-Environment:
-  Variables:
-    FAST_API__AUTH__API_KEY__NAME: "x-api-key"
-    FAST_API__AUTH__API_KEY__VALUE: "${ssm:/api-key/value}"
+```bash
+pip install mgraph-ai-service-html
 ```
 
-## Development Guidelines
+## Quick Start
 
-### Adding New Features
-1. Create feature branch from `dev`
-2. Add new route in `fast_api/routes/`
-3. Add service logic in `service/`
-4. Write comprehensive tests
-5. Update documentation
-6. Submit pull request to `dev`
+### Python Client Example
 
-### Code Style
-- Use type annotations for all parameters
-- Follow existing naming conventions
-- Write descriptive docstrings
-- Ensure 100% test coverage for new code
+```python
+import requests
 
-### Security Considerations
-- Always validate inputs using type-safe classes
-- Never commit secrets or API keys
-- Use environment variables for configuration
-- Implement proper error handling
+# Parse HTML to dict
+response = requests.post(
+    "https://html.mgraph.ai/html/to/dict",
+    json={"html": "<html><body>Hello World</body></html>"}
+)
+html_dict = response.json()["html_dict"]
 
-## Support
+# Extract text nodes
+response = requests.post(
+    "https://html.mgraph.ai/html/to/text/nodes",
+    json={"html": "<html><body>Hello World</body></html>"}
+)
+text_nodes = response.json()["text_nodes"]
+```
 
-- **Issues**: [GitHub Issues](https://github.com/the-cyber-boardroom/MGraph-AI__Service__Base/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/the-cyber-boardroom/MGraph-AI__Service__Base/discussions)
-- **Documentation**: This document and inline code documentation
+## Development
 
----
+### Project Structure
 
-Created and maintained by [The Cyber Boardroom](https://github.com/the-cyber-boardroom) team
+```
+mgraph_ai_service_html/
+├── html__fast_api/
+│   ├── Html__Fast_API.py        # Main FastAPI app
+│   ├── core/                    # Core transformation logic
+│   ├── routes/                  # API route handlers
+│   └── schemas/                 # Type_Safe request/response schemas
+├── lambdas/
+│   └── lambda_handler.py        # AWS Lambda entry point
+└── utils/
+    └── Version.py               # Version management
+```
+
+### Running Locally
+
+```python
+from mgraph_ai_service_html.html__fast_api.Html__Fast_API import Html__Fast_API
+
+with Html__Fast_API() as api:
+    api.setup()
+    app = api.app()
+    # Use with uvicorn: uvicorn main:app --reload
+```
+
+## Key Design Principles
+
+1. **No Business Logic in Schemas** - Schemas are pure data structures
+2. **Atomic Operations** - Maximum caching control for callers
+3. **No Built-in Caching** - Caller's responsibility
+4. **Type_Safe Throughout** - Runtime type checking on all operations
+5. **No LLM Dependencies** - Fast, deterministic operations only
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Related Services
+
+- **MGraph-AI__Service__Cache** - Caching layer for HTML operations
+- **MGraph-AI__Service__Semantic_Text** - LLM-based text analysis
+- **MGraph-AI__Service__LLMs** - LLM provider abstraction
+
+## Version History
+
+- **v0.1.0** (2025-10-15) - Initial release
+  - Pure HTML structural transformation
+  - Atomic and compound operations
+  - Type_Safe throughout
+  - AWS Lambda ready
