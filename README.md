@@ -1,6 +1,6 @@
 # MGraph-AI__Service__Html - Complete Delivery
 
-[![Current Release](https://img.shields.io/badge/release-v0.6.0-blue)](https://github.com/the-cyber-boardroom/MGraph-AI__Service__Html/releases)
+[![Current Release](https://img.shields.io/badge/release-v0.6.1-blue)](https://github.com/the-cyber-boardroom/MGraph-AI__Service__Html/releases)
 [![AWS Lambda](https://img.shields.io/badge/AWS-Lambda-orange)](https://aws.amazon.com/lambda/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 [![CI Pipeline - DEV](https://github.com/the-cyber-boardroom/MGraph-AI__Service__Html/actions/workflows/ci-pipeline__dev.yml/badge.svg)](https://github.com/the-cyber-boardroom/MGraph-AI__Service__Html/actions)
