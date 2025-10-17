@@ -5,7 +5,7 @@
 **Purpose**: Complete technical brief for implementing an admin UI for the MGraph-AI__Service__Html service  
 **Methodology**: Iterative Flow Development (IFD)  
 **Target Audience**: LLM assistant with access to MGraph-AI__Service__Html codebase  
-**Implementation Approach**: Progressive enhancement through isolated versions  
+**Implementation Approach**: Progressive enhancement through incremental versions  
 
 ---
 
@@ -18,13 +18,13 @@ Create an interactive web-based admin UI that serves as both a **testing playgro
 ✅ **Zero Setup Required** - Pre-loaded samples, no file upload needed to start  
 ✅ **Self-Documenting** - Examples demonstrate capabilities  
 ✅ **Zero External Dependencies** - Pure native web platform (HTML/CSS/ES6+ JS)  
-✅ **IFD Compliant** - Version independence, progressive enhancement  
+✅ **IFD Compliant** - Version independence at major version level, incremental minor versions  
 ✅ **Real API Integration** - Calls actual service endpoints (no CORS, same server)  
 ✅ **Responsive Design** - Works on desktop, tablet, mobile  
 
 ---
 
-## 🏗️ Service Context
+## 🗃️ Service Context
 
 ### MGraph-AI__Service__Html Overview
 
@@ -60,18 +60,69 @@ The service provides HTML transformation capabilities through a FastAPI backend 
 
 ## 📚 IFD Methodology - Core Principles
 
-### Version Independence
-Each version is **completely self-contained** with NO shared code between versions. When creating v0.1.1, copy the entire v0.1.0 folder and enhance it. Never import or reference files from other versions.
+### Version Independence Model
+
+**CRITICAL UNDERSTANDING:**
+
+**Major Versions are Independent:**
+- v0.1.0 is completely independent from v0.2.0
+- v0.2.0 is completely independent from v1.0.0
+- Each major version is a fresh start with NO dependencies on previous major versions
+
+**Minor Versions are Incremental:**
+- v0.1.1 builds on and references files from v0.1.0
+- v0.1.2 builds on v0.1.1 and can reference any v0.1.x files
+- v0.1.5 may still use files created in v0.1.0, v0.1.2, or v0.1.3
+- Minor versions contain ONLY the changed/new files for that specific increment
+
+**Example Structure:**
+```
+v0.1.0/  (Complete standalone implementation)
+├── index.html
+├── css/common.css
+├── css/dashboard.css
+└── js/api-client.js
+
+v0.1.1/  (ONLY new/changed files)
+├── playground.html              # NEW file
+├── css/playground.css           # NEW file
+├── js/playground.js             # NEW file
+└── components/                  # NEW directory
+    └── html-input/
+        ├── html-input.html
+        ├── html-input.css
+        └── html-input.js
+
+# v0.1.1 references:
+# - ../v0.1.0/css/common.css
+# - ../v0.1.0/js/api-client.js
+# - etc.
+
+v0.1.2/  (ONLY new/changed files)
+├── components/
+    └── advanced-filter/         # NEW component
+        └── ...
+
+# v0.1.2 references:
+# - ../v0.1.0/css/common.css
+# - ../v0.1.1/components/html-input/
+# - etc.
+
+v0.2.0/  (NEW major version - completely independent)
+├── index.html                   # Fresh implementation
+├── styles/                      # Different structure
+└── ...                          # NO references to v0.1.x
+```
 
 ### Progressive Enhancement
 ```
-v0.1.0 → Basic functionality (Dashboard)
-v0.1.1 → Add features (Playground with components)
-v0.1.2 → More features (Text Nodes Explorer)
+v0.1.0 → Core foundation (Dashboard)
+v0.1.1 → Add Playground (references v0.1.0 files)
+v0.1.2 → Add Text Explorer (references v0.1.0 and v0.1.1 files)
+v0.1.3 → Add Hash Mapper (references previous v0.1.x files)
 ...
+v0.2.0 → New major version (fresh start, no v0.1.x dependencies)
 ```
-
-Each version builds on **concepts** from previous versions, not code.
 
 ### Zero External Dependencies
 - NO React, Vue, Angular, jQuery, etc.
@@ -137,7 +188,7 @@ mgraph_ai_service_html__admin_ui/
 │   # path         = __path__[0]
 │
 └── v0/
-    ├── v0.1.0/                          # Version 1: Dashboard
+    ├── v0.1.0/                          # Major Version: Complete Foundation
     │   ├── index.html                    # Dashboard page
     │   ├── 404.html                      # Error page
     │   ├── README.md                     # Version documentation
@@ -153,47 +204,103 @@ mgraph_ai_service_html__admin_ui/
     │       ├── complex.html             # Nested structure
     │       └── dashboard.html           # Self-referential (this page!)
     │
-    └── v0.1.1/                          # Version 2: Transformation Playground
-        ├── index.html                    # Dashboard (copied from v0.1.0)
+    └── v0.1.1/                          # Minor Version: ONLY new/changed files
         ├── playground.html               # NEW: Playground page
-        ├── 404.html                      # Error page (copied)
-        ├── README.md                     # Updated documentation
+        ├── README.md                     # NEW: Updated documentation
         ├── css/
-        │   ├── common.css               # Enhanced from v0.1.0
-        │   ├── dashboard.css            # Copied from v0.1.0
-        │   └── playground.css           # NEW: Playground styles
-        ├── components/                   # NEW: Web Components
-        │   ├── top-nav/                 # Navigation (flat structure)
+        │   └── playground.css           # NEW: Playground-specific styles
+        ├── components/                   # NEW: Web Components directory
+        │   ├── top-nav/                 # NEW: Navigation component
         │   │   ├── top-nav.html
         │   │   ├── top-nav.css
         │   │   └── top-nav.js
-        │   ├── html-input/              # HTML input panel (flat)
+        │   ├── html-input/              # NEW: HTML input panel
         │   │   ├── html-input.html
         │   │   ├── html-input.css
         │   │   └── html-input.js
-        │   ├── transformation-selector/ # Endpoint selector (flat)
+        │   ├── transformation-selector/ # NEW: Endpoint selector
         │   │   ├── transformation-selector.html
         │   │   ├── transformation-selector.css
         │   │   └── transformation-selector.js
-        │   └── output-viewer/           # Output display (flat)
+        │   └── output-viewer/           # NEW: Output display
         │       ├── output-viewer.html
         │       ├── output-viewer.css
         │       └── output-viewer.js
         ├── js/
-        │   ├── services/
-        │   │   └── api-client.js        # Enhanced from v0.1.0
-        │   ├── dashboard.js             # Copied from v0.1.0
         │   └── playground.js            # NEW: Playground orchestrator
-        └── samples/                      # Enhanced samples
-            ├── simple.html              # Copied from v0.1.0
-            ├── complex.html             # Copied from v0.1.0
-            ├── dashboard.html           # Updated
-            └── playground.html          # NEW: Self-referential
+        └── samples/
+            └── playground.html          # NEW: Self-referential playground
+
+        # v0.1.1 REFERENCES (via relative paths):
+        # - ../v0.1.0/css/common.css
+        # - ../v0.1.0/js/services/api-client.js
+        # - ../v0.1.0/samples/simple.html
+        # - ../v0.1.0/samples/complex.html
+        # - ../v0.1.0/404.html
+```
+
+### Path References in v0.1.1
+
+When v0.1.1 needs files from v0.1.0, it uses relative paths:
+
+**Example: v0.1.1/playground.html**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformation Playground - HTML Service</title>
+    
+    <!-- Reference v0.1.0 common styles -->
+    <link rel="stylesheet" href="../v0.1.0/css/common.css">
+    
+    <!-- v0.1.1 specific styles -->
+    <link rel="stylesheet" href="./css/playground.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Component markup -->
+    </div>
+
+    <!-- Reference v0.1.0 API client -->
+    <script src="../v0.1.0/js/services/api-client.js"></script>
+
+    <!-- v0.1.1 components -->
+    <script src="./components/top-nav/top-nav.js"></script>
+    <script src="./components/html-input/html-input.js"></script>
+    
+    <!-- v0.1.1 orchestrator -->
+    <script src="./js/playground.js"></script>
+</body>
+</html>
+```
+
+**Example: v0.1.1/components/html-input/html-input.js**
+```javascript
+/**
+ * HTML Input Component
+ * Loads samples from v0.1.0 using relative paths
+ */
+class HtmlInput extends HTMLElement {
+    // ...
+    
+    async loadSample(sampleName) {
+        try {
+            // Reference v0.1.0 samples
+            const response = await fetch(`../../v0.1.0/samples/${sampleName}.html`);
+            const html = await response.text();
+            // ... rest of implementation
+        } catch (error) {
+            console.error('Failed to load sample:', error);
+        }
+    }
+}
 ```
 
 ---
 
-## 🔌 Backend Integration
+## 📌 Backend Integration
 
 ### Python Service Class
 
@@ -227,6 +334,8 @@ class Html__Admin__Service(Type_Safe):
         # Route admin requests:
         # - /html-service/ → redirect to latest version
         # - /html-service/v0/{version}/* → serve static files
+        # Files are resolved across version boundaries
+        # e.g., v0.1.1/playground.html can reference ../v0.1.0/css/common.css
         pass
 
     def redirect_to_latest(self) -> Dict:
@@ -242,12 +351,14 @@ class Html__Admin__Service(Type_Safe):
 
     def serve_static_file(self, path) -> Optional[Dict]:
         # Serve files from admin_ui_root/v0/{version}/
-        # Security: ensure path doesn't escape admin_ui_root
+        # Resolve relative paths (../) to support cross-version references
+        # Security: ensure resolved path doesn't escape admin_ui_root
         # Return 404 if file not found
         pass
 
     def serve_404(self, path) -> Dict:
-        # Look for custom 404.html in current version
+        # Look for 404.html in current version first
+        # If not found, look in parent major version (v0.1.0)
         # Fallback to generic 404
         pass
 
@@ -262,8 +373,11 @@ class Html__Admin__Service(Type_Safe):
 # Admin UI URLs (served by Html__Admin__Service)
 http://localhost:8000/html-service/                           → 302 redirect to latest
 http://localhost:8000/html-service/v0/v0.1.0/index.html      → Dashboard v0.1.0
-http://localhost:8000/html-service/v0/v0.1.1/index.html      → Dashboard v0.1.1
 http://localhost:8000/html-service/v0/v0.1.1/playground.html → Playground v0.1.1
+
+# Cross-version references (handled by serve_static_file)
+http://localhost:8000/html-service/v0/v0.1.0/css/common.css  → Served from v0.1.0
+http://localhost:8000/html-service/v0/v0.1.1/css/playground.css → Served from v0.1.1
 
 # Service API URLs (existing FastAPI routes)
 http://localhost:8000/html/to__dict                          → POST endpoint
@@ -345,7 +459,7 @@ http://localhost:8000/hashes/to__html                        → POST endpoint
 
 ### Common CSS Patterns
 
-**Base Styles** (`css/common.css`):
+**Base Styles** (`v0.1.0/css/common.css` - created in v0.1.0, referenced by all v0.1.x versions):
 ```css
 * {
     margin: 0;
@@ -436,6 +550,22 @@ body {
 ### Purpose
 Create service overview page with navigation to future features. Establish design patterns and project structure.
 
+### Files to Create (Complete Foundation)
+
+This is a **major version** - contains ALL files needed for this version to function independently.
+
+#### File List:
+- `index.html` - Dashboard page
+- `404.html` - Error page  
+- `README.md` - Version documentation
+- `css/common.css` - Shared design system
+- `css/dashboard.css` - Dashboard-specific styles
+- `js/services/api-client.js` - API communication
+- `js/dashboard.js` - Dashboard logic
+- `samples/simple.html` - Basic sample
+- `samples/complex.html` - Complex sample
+- `samples/dashboard.html` - Self-referential sample
+
 ### Pages
 
 #### `index.html` - Dashboard
@@ -521,7 +651,7 @@ Create service overview page with navigation to future features. Establish desig
    Cards linking to future pages:
    - "🎮 Try Playground" → `/html-service/v0/v0.1.1/playground.html` (coming soon badge)
    - "📊 Explore Text Nodes" → (coming soon)
-   - "🔑 Hash Mapper" → (coming soon)
+   - "🔐 Hash Mapper" → (coming soon)
 
 #### `404.html` - Error Page
 
@@ -744,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    let endpointsHTML = '<div class="card-title">🔌 API Endpoints</div>';
+    let endpointsHTML = '<div class="card-title">📌 API Endpoints</div>';
     endpoints.forEach(group => {
         endpointsHTML += `<div class="endpoint-group">
             <h3>${group.category}</h3>
@@ -777,7 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="badge">Coming Soon</span>
             </div>
             <div class="action-card coming-soon">
-                <div class="action-icon">🔑</div>
+                <div class="action-icon">🔐</div>
                 <h3>Hash Mapper</h3>
                 <p>Semantic text modification workflow</p>
                 <span class="badge">Coming Soon</span>
@@ -1107,7 +1237,28 @@ Add interactive playground page where users can test all service endpoints with 
 
 ### Implementation Strategy
 
-**CRITICAL**: Copy entire v0.1.0 folder → v0.1.1, then add new features. Do NOT reference v0.1.0 files.
+**CRITICAL**: This is a **minor version** - create ONLY new/changed files. Reference v0.1.0 files using relative paths (../).
+
+### Files to Create (ONLY New/Changed)
+
+#### New Files:
+- `playground.html` - NEW playground page
+- `README.md` - UPDATED version documentation
+- `css/playground.css` - NEW playground-specific styles
+- `js/playground.js` - NEW playground orchestrator
+- `components/` - NEW entire components directory
+  - `top-nav/` (3 files)
+  - `html-input/` (3 files)
+  - `transformation-selector/` (3 files)
+  - `output-viewer/` (3 files)
+- `samples/playground.html` - NEW self-referential sample
+
+#### Referenced from v0.1.0 (NO copies):
+- `../v0.1.0/css/common.css`
+- `../v0.1.0/js/services/api-client.js`
+- `../v0.1.0/samples/simple.html`
+- `../v0.1.0/samples/complex.html`
+- `../v0.1.0/404.html`
 
 ### New Pages
 
@@ -1121,7 +1272,11 @@ Add interactive playground page where users can test all service endpoints with 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transformation Playground - HTML Service</title>
-    <link rel="stylesheet" href="./css/common.css">
+    
+    <!-- Reference v0.1.0 common styles -->
+    <link rel="stylesheet" href="../v0.1.0/css/common.css">
+    
+    <!-- v0.1.1 specific styles -->
     <link rel="stylesheet" href="./css/playground.css">
 </head>
 <body>
@@ -1159,16 +1314,16 @@ Add interactive playground page where users can test all service endpoints with 
         </footer>
     </div>
 
-    <!-- Services -->
-    <script src="./js/services/api-client.js"></script>
+    <!-- Reference v0.1.0 API client -->
+    <script src="../v0.1.0/js/services/api-client.js"></script>
 
-    <!-- Components -->
+    <!-- v0.1.1 Components -->
     <script src="./components/top-nav/top-nav.js"></script>
     <script src="./components/html-input/html-input.js"></script>
     <script src="./components/transformation-selector/transformation-selector.js"></script>
     <script src="./components/output-viewer/output-viewer.js"></script>
 
-    <!-- Main App -->
+    <!-- v0.1.1 Main App -->
     <script src="./js/playground.js"></script>
 </body>
 </html>
@@ -1191,7 +1346,7 @@ Add interactive playground page where users can test all service endpoints with 
             <span class="nav-title">HTML Service</span>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html" data-page="index">Dashboard</a></li>
+            <li><a href="../v0.1.0/index.html" data-page="index">Dashboard</a></li>
             <li><a href="playground.html" data-page="playground">Playground</a></li>
         </ul>
     </div>
@@ -1494,7 +1649,16 @@ class HtmlInput extends HTMLElement {
 
     async loadSample(sampleName) {
         try {
-            const response = await fetch(`./samples/${sampleName}.html`);
+            // Reference v0.1.0 samples for simple/complex
+            // Reference v0.1.1 samples for playground
+            let samplePath;
+            if (sampleName === 'playground') {
+                samplePath = `./samples/${sampleName}.html`;
+            } else {
+                samplePath = `../v0.1.0/samples/${sampleName}.html`;
+            }
+            
+            const response = await fetch(samplePath);
             const html = await response.text();
             const textarea = this.querySelector('#html-textarea');
             textarea.value = html;
@@ -2227,7 +2391,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 payload.max_depth = config.maxDepth;
             }
 
-            // Call API
+            // Call API (using v0.1.0 api-client.js)
             result = await window.apiClient.callEndpoint(config.route, payload);
 
             // Determine output type
@@ -2248,23 +2412,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-```
-
-### Updated Dashboard
-
-Update `index.html` to add top navigation and update the "Try Playground" card to link to the actual playground:
-
-```html
-<!-- Add after opening <body> and before container -->
-<top-nav current-page="index"></top-nav>
-
-<!-- Update quick actions card -->
-<a href="playground.html" class="action-card">
-    <div class="action-icon">🎮</div>
-    <h3>Transformation Playground</h3>
-    <p>Interactive testing of all endpoints</p>
-    <span class="badge">Available Now!</span>
-</a>
 ```
 
 ### New Sample File
@@ -2343,27 +2490,20 @@ This should be a **copy of the rendered `playground.html`** (the page itself), a
    - Create `mgraph_ai_service_html__admin_ui/__init__.py`
    - Create `v0/v0.1.0/` folder structure
 
-2. **Create Sample Files**
-   - `samples/simple.html`
-   - `samples/complex.html`
-   - `samples/dashboard.html` (copy of index.html)
+2. **Create ALL v0.1.0 Files**
+   - Sample files (simple.html, complex.html, dashboard.html)
+   - Dashboard page (index.html)
+   - Error page (404.html)
+   - CSS (common.css, dashboard.css)
+   - JavaScript (api-client.js, dashboard.js)
+   - README.md
 
-3. **Create Dashboard Page**
-   - `index.html` with structure
-   - `css/common.css` with design system
-   - `css/dashboard.css` with page styles
-   - `js/services/api-client.js` with API methods
-   - `js/dashboard.js` with page logic
-
-4. **Create Error Page**
-   - `404.html`
-
-5. **Create Backend Service**
+3. **Create Backend Service**
    - `mgraph_ai_service_html/html__fast_api/Html__Admin__Service.py`
    - Wire up to FastAPI routes
    - Test serving at `/html-service/`
 
-6. **Test v0.1.0**
+4. **Test v0.1.0**
    - Dashboard loads correctly
    - Endpoints display
    - Samples accessible
@@ -2371,39 +2511,28 @@ This should be a **copy of the rendered `playground.html`** (the page itself), a
 
 ### Phase 2: Playground (v0.1.1)
 
-1. **Copy v0.1.0 → v0.1.1**
-   - Copy entire folder
-   - Update README.md
+1. **Create v0.1.1 Folder**
+   - Create `v0/v0.1.1/` directory
+   - DO NOT copy v0.1.0 files
 
-2. **Create Components**
-   - `components/top-nav/` (3 files)
-   - `components/html-input/` (3 files)
-   - `components/transformation-selector/` (3 files)
-   - `components/output-viewer/` (3 files)
+2. **Create ONLY New Files**
+   - playground.html (with relative paths to v0.1.0)
+   - css/playground.css
+   - js/playground.js
+   - components/ (entire directory with 4 components)
+   - samples/playground.html
+   - README.md
 
-3. **Create Playground Page**
-   - `playground.html`
-   - `css/playground.css`
-   - `js/playground.js`
+3. **Update Backend Service**
+   - Change `current_version` to "v0.1.1"
+   - Ensure serve_static_file resolves relative paths correctly
 
-4. **Update Dashboard**
-   - Add `<top-nav>` component
-   - Update quick action cards
-   - Link to playground
-
-5. **Enhance API Client**
-   - Add all endpoint methods
-   - Test with real service
-
-6. **Add New Sample**
-   - `samples/playground.html`
-
-7. **Test v0.1.1**
+4. **Test v0.1.1**
+   - Playground loads at `/html-service/v0/v0.1.1/playground.html`
+   - References to v0.1.0 files work (CSS, JS, samples)
    - All components load
-   - Samples load in input
    - Transformations work
    - Output displays correctly
-   - Copy/download work
    - Navigation works
 
 ---
@@ -2420,23 +2549,21 @@ This should be a **copy of the rendered `playground.html`** (the page itself), a
 - [ ] Responsive on mobile
 
 ### v0.1.1 Testing
-- [ ] Dashboard loads with top navigation
 - [ ] Playground loads at `/html-service/v0/v0.1.1/playground.html`
+- [ ] v0.1.0 common.css loads correctly (cross-version reference)
+- [ ] v0.1.0 api-client.js loads correctly (cross-version reference)
+- [ ] v0.1.0 samples load in dropdown (simple, complex, dashboard)
+- [ ] v0.1.1 playground sample loads
 - [ ] Sample selector works (loads all samples)
 - [ ] Simple sample loads by default
 - [ ] Character counter updates
-- [ ] All transformations work:
-  - [ ] HTML → Dict
-  - [ ] HTML → Text Nodes
-  - [ ] HTML → Lines
-  - [ ] HTML → HTML (Hashes)
-  - [ ] HTML → HTML (XXX)
+- [ ] All transformations work (HTML → Dict, Text Nodes, Lines, Hashes, XXX)
 - [ ] Max depth slider works (for applicable endpoints)
 - [ ] Output displays correctly (JSON/HTML/text)
 - [ ] Copy button works
 - [ ] Download button works
 - [ ] Error handling works (invalid HTML, API errors)
-- [ ] Navigation between pages works
+- [ ] Navigation between pages works (Dashboard ↔ Playground)
 - [ ] Responsive on mobile
 - [ ] No console errors
 
@@ -2444,10 +2571,15 @@ This should be a **copy of the rendered `playground.html`** (the page itself), a
 
 ## 🎓 Critical IFD Reminders
 
-### Version Independence
-- v0.1.0 and v0.1.1 are COMPLETELY SEPARATE
-- NO imports between versions
-- When creating v0.1.1, COPY entire v0.1.0 folder
+### Version Independence at Major Version Level
+- v0.1.0, v0.2.0, v1.0.0 are COMPLETELY SEPARATE
+- NO imports between major versions
+
+### Minor Version Incremental Build
+- v0.1.1 contains ONLY new/changed files
+- v0.1.1 references v0.1.0 files via relative paths
+- v0.1.2 can reference any v0.1.x files
+- Minimize duplication within a major version family
 
 ### Component Communication
 - Use CustomEvents, NOT direct method calls
@@ -2460,16 +2592,16 @@ This should be a **copy of the rendered `playground.html`** (the page itself), a
 - Test with real responses
 
 ### Progressive Enhancement
-- v0.1.0 works standalone (no components)
-- v0.1.1 adds components (enhanced functionality)
+- v0.1.0 works standalone (complete foundation)
+- v0.1.1 adds components (references v0.1.0)
 - Each version is potentially shippable
 
 ---
 
 ## 📝 Final Notes
 
-### File Serving
-The admin UI is served as static files from the Python backend using `Html__Admin__Service`. This follows the exact pattern from `Proxy__Admin__Service` in the mitmproxy codebase.
+### File Serving with Cross-Version References
+The admin UI is served as static files from the Python backend using `Html__Admin__Service`. The backend must handle relative path resolution (../) to allow minor versions to reference files from their parent major version.
 
 ### No CORS Issues
 Because the admin UI and service API are on the same origin (served by same FastAPI app), there are no CORS restrictions. JavaScript can directly call service endpoints.
@@ -2489,6 +2621,7 @@ Including `dashboard.html` and `playground.html` as samples creates a meta/cool 
 - All endpoints clearly documented
 - Sample files demonstrate capabilities
 - Zero external dependencies
+- Complete standalone implementation
 
 **v0.1.1 is successful when:**
 - Users can test any endpoint within 30 seconds of landing
@@ -2496,3 +2629,5 @@ Including `dashboard.html` and `playground.html` as samples creates a meta/cool 
 - All transformations work correctly
 - Results are clearly displayed
 - Copy/download functionality works
+- Successfully references v0.1.0 files without duplication
+- Demonstrates proper IFD incremental versioning
