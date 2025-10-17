@@ -379,3 +379,86 @@ class test_Routes__Html(TestCase):
         result = response.json()
 
         assert result['node_count'] >= 100                       # At least 100 paragraphs
+
+
+    def test__bug__to__html__xxx__check_h1_and_b(self):                               # Test xxx masking
+        html = "<h1>aaa</h1><b>aaa</b>"
+
+        response = self.client.post('/html/to/html/xxx',
+                                   json={'html': html})
+
+        assert response.status_code == 200
+
+        assert response.text == "<h1>xxx<b>xxx</b></h1>\n"          # BUG the h1 should had been terminiated
+
+        html_2 = f"<html><body>{html}</body></html>"
+        response_2 = self.client.post('/html/to/html/xxx', json={'html': html_2})
+
+        assert response_2.text == ('<!DOCTYPE html>\n'
+                                     '<html>\n'
+                                     '    <body>\n'
+                                     '        <h1>xxx</h1>\n'
+                                     '        <b>xxx</b>\n'
+                                     '    </body>\n'
+                                     '</html>\n')
+
+    def test__bug__to__html__hashes__check_h1_and_b(self):                               # Test xxx masking
+        html = "<h1>aaa</h1><b>aaa</b>"
+
+        response = self.client.post('/html/to/html/hashes',
+                                   json={'html': html})
+
+        assert response.status_code == 200
+
+        assert response.text == "<h1>47bce5c74f<b>47bce5c74f</b></h1>\n"          # BUG the h1 should had been terminiated
+
+        html_2 = f"<html><body>{html}</body></html>"
+        response_2 = self.client.post('/html/to/html/hashes', json={'html': html_2})
+
+        assert response_2.text == ('<!DOCTYPE html>\n'
+                                     '<html>\n'
+                                     '    <body>\n'
+                                     '        <h1>47bce5c74f</h1>\n'
+                                     '        <b>47bce5c74f</b>\n'
+                                     '    </body>\n'
+                                     '</html>\n')
+
+
+
+    def test__bug__html_dict_structure(self):
+        html = "<h1>aaa</h1><b>aaa</b>"
+
+        response = self.client.post('/html/to/dict',
+                                   json={'html': html})
+
+        assert response.status_code == 200
+        result = response.json()
+
+
+        assert result == {'html_dict': {'attrs': {},
+                                       'nodes': [{'data': 'aaa', 'type': 'TEXT'},
+                                                 {'attrs': {},
+                                                  'nodes': [{'data': 'aaa', 'type': 'TEXT'}],
+                                                  'tag': 'b'}],
+                                       'tag': 'h1'},
+                         'max_depth': 2,
+                         'node_count': 4} != {}
+
+        html_2 = f"<html><body>{html}</body></html>"
+        response_2 = self.client.post('/html/to/dict', json={'html': html_2})
+        result_2 = response_2.json()
+        assert result_2 == {'html_dict': {'attrs': {},
+                                           'nodes': [{'attrs': {},
+                                                      'nodes': [{'attrs': {},
+                                                                 'nodes': [{'data': 'aaa', 'type': 'TEXT'}],
+                                                                 'tag': 'h1'},
+                                                                {'attrs': {},
+                                                                 'nodes': [{'data': 'aaa', 'type': 'TEXT'}],
+                                                                 'tag': 'b'}],
+                                                      'tag': 'body'}],
+                                           'tag': 'html'},
+                             'max_depth': 3,
+                             'node_count': 6}
+
+
+

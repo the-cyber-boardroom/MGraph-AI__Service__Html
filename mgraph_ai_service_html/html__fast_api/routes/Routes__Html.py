@@ -1,4 +1,5 @@
 from osbot_fast_api.api.routes.Fast_API__Routes                                                 import Fast_API__Routes
+from osbot_utils.helpers.html.transformers.Html_Dict__To__Html import Html_Dict__To__Html
 from starlette.responses                                                                        import HTMLResponse, PlainTextResponse
 from typing                                                                                     import Dict
 from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations                   import Html__Direct__Transformations
@@ -68,10 +69,9 @@ class Routes__Html(Fast_API__Routes):                           # HTML transform
                        ) -> HTMLResponse:
         html_dict  = self.html_direct_transformations.html__to__html_dict(request.html)
         text_nodes = self.html_direct_transformations.html_dict__to__text_nodes(html_dict, request.max_depth)
-        
-        html_with_xxx = self._replace_text_with_xxx(html_dict, text_nodes)
-        html = self.html_direct_transformations.html_dict__to__html(html_with_xxx)
-        
+
+        html = self._replace_text_with_xxx(html_dict, text_nodes)  # ← Gets HTML string directly
+
         return HTMLResponse(content=html, status_code=200)
     
     # ========== Helper Methods ==========
@@ -100,22 +100,20 @@ class Routes__Html(Fast_API__Routes):                           # HTML transform
     def _check_depth(self, html_dict: Dict, max_depth: int) -> bool:  # Hit depth limit?
         actual_depth = self._calculate_max_depth(html_dict)
         return actual_depth >= max_depth
-        
+
+
     def _replace_text_with_hashes(self, html_dict: Dict, text_nodes: Dict) -> Dict:  # Replace text with hashes
         # Implementation: traverse html_dict, replace text with hashes
         # The text_nodes dict contains the mappings we need
         return html_dict  # Already modified during extraction
         
-    def _replace_text_with_xxx(self, html_dict: Dict, text_nodes: Dict) -> Dict:  # Replace text with x's
-        from osbot_utils.helpers.html.transformers.Html_Dict__To__Html import Html_Dict__To__Html
+    def _replace_text_with_xxx(self, html_dict: Dict, text_nodes: Dict) -> str:  # ← Return str, not Dict
         html = Html_Dict__To__Html(root=html_dict).convert()
         for text_hash, text_element in text_nodes.items():
             original_text = text_element.get('text')
             text_to_replace = ''.join('x' if c != ' ' else ' ' for c in original_text)
             html = html.replace(text_hash, text_to_replace)
-        # Convert back to dict
-        from osbot_utils.helpers.html.transformers.Html__To__Html_Dict import Html__To__Html_Dict
-        return Html__To__Html_Dict(html=html).convert()
+        return html
     
     def setup_routes(self):
         self.add_route_post(self.to__dict         )             # Atomic operations
