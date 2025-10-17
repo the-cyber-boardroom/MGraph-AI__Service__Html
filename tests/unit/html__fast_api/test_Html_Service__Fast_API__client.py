@@ -54,6 +54,7 @@ class test_Html_Service__Fast_API__client(TestCase):
                                                  Safe_Str__Fast_API__Route__Prefix('/dict/to/lines'),
                                                  Safe_Str__Fast_API__Route__Prefix('/dict/to/text/nodes'),
                                                  Safe_Str__Fast_API__Route__Prefix('/hashes/to/html'),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html-service/{file_path:path}'),
                                                  Safe_Str__Fast_API__Route__Prefix('/html/to/dict'),
                                                  Safe_Str__Fast_API__Route__Prefix('/html/to/html'),
                                                  Safe_Str__Fast_API__Route__Prefix('/html/to/html/hashes'),
