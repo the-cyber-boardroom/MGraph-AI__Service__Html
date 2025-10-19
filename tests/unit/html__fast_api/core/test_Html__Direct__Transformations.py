@@ -1,7 +1,7 @@
 from unittest                                                                   import TestCase
-
-from osbot_utils.testing.__ import __
-from osbot_utils.utils.Objects import base_classes, obj
+from osbot_utils.testing.__                                                     import __
+from osbot_utils.testing.__helpers import obj
+from osbot_utils.utils.Objects                                                  import base_classes
 from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations   import Html__Direct__Transformations
 from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
 

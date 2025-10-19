@@ -42,6 +42,7 @@ class test_Routes__Html(TestCase):
         result = response.json()
 
         assert 'html_dict' in result
+        assert result == {'html_dict': {}, 'max_depth': 0, 'node_count': 0}
 
     def test__to__dict__complex_structure(self):                 # Test with complex nested HTML
         html = """

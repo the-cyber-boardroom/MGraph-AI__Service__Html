@@ -122,7 +122,7 @@ class test_Routes__Hashes(TestCase):
 
         assert response2.status_code == 200
         html_dict = response2.json()['html_dict']               # todo: BUG: this workflow is wrong, we should be getting an hash mapping here
-        
+
         hash_mapping = {}                                        # Step 3: Build hash mapping
         for hash_value, node_data in text_nodes.items():         # (simulating external service)
             original_text = node_data['text']

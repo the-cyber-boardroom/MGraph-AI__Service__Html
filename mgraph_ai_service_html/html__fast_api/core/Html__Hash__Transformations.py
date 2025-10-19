@@ -79,8 +79,8 @@ class Html__Hash__Transformations(Type_Safe):
     def count_nodes(self, html_dict: Dict
                      ) -> Safe_UInt:                                                            # Count total nodes in HTML tree
         def count_recursive(node):
-            #if not isinstance(node, dict):                     # todo: see if we need this, since with all the tests, this line was not being hit
-            #    return 0
+            if not isinstance(node, dict):
+               return 0
             count = 1
             for child in node.get('nodes', []):
                 count += count_recursive(child)

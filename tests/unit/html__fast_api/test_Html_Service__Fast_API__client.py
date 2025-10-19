@@ -48,17 +48,19 @@ class test_Html_Service__Fast_API__client(TestCase):
 
     def test__config_fast_api_routes(self):
         # todo: refactor these route values to the respective Routes_* classes
-        assert self.fast_api.routes_paths() == [ Safe_Str__Fast_API__Route__Prefix('/auth/set-auth-cookie'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/auth/set-cookie-form'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/html'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/lines'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/text/nodes'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/hashes/to/html'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html-service/{file_path:path}'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/dict'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html/hashes'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html/xxx'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/lines'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/text/nodes'),
-                                                 Safe_Str__Fast_API__Route__Prefix('/info/version')]
+        assert self.fast_api.routes_paths() == [ Safe_Str__Fast_API__Route__Prefix('/auth/set-auth-cookie'          ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/auth/set-cookie-form'          ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/html'                  ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/lines'                 ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/text/nodes'            ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/hashes/to/html'                ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html-service/{file_path:path}' ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/dict'                  ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/dict/hashes'           ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html'                  ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html/hashes'           ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html/xxx'              ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/lines'                 ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/text/hashes'           ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/text/nodes'            ),
+                                                 Safe_Str__Fast_API__Route__Prefix('/info/version'                  )]

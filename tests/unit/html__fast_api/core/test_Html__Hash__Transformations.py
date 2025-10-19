@@ -401,6 +401,14 @@ class test_Html__Hash__Transformations(TestCase):
         assert type(count)  is Safe_UInt
         assert count        == 1                                # todo: double check this value, since shouldn't this be zero if html_dict is {}
 
+    def test__count_nodes__null_dict(self):                     # Test node counting empty
+        html_dict = None
+
+        count = self.transformations.count_nodes(html_dict)
+
+        assert type(count)  is Safe_UInt
+        assert count        == 0
+
     def test__calculate_max_depth__simple(self):                 # Test depth calculation simple
         html_dict = { 'tag': 'p',
                       'attrs': {},
