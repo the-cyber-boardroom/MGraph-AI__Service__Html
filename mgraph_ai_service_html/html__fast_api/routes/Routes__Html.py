@@ -1,18 +1,18 @@
-from osbot_fast_api.api.routes.Fast_API__Routes                                                 import Fast_API__Routes
-from starlette.responses                                                                        import HTMLResponse, PlainTextResponse
-from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations                   import Html__Direct__Transformations
-from mgraph_ai_service_html.html__fast_api.core.Html__Hash__Transformations                     import Html__Hash__Transformations
-from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Text__Nodes__Response import Schema__Dict__To__Text__Nodes__Response
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Request         import Schema__Html__To__Dict__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Response        import Schema__Html__To__Dict__Response
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Hashes__Request import Schema__Html__To__Dict__Hashes__Request
+from osbot_fast_api.api.routes.Fast_API__Routes                                                  import Fast_API__Routes
+from starlette.responses                                                                         import HTMLResponse, PlainTextResponse
+from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations                    import Html__Direct__Transformations
+from mgraph_ai_service_html.html__fast_api.core.Html__Hash__Transformations                      import Html__Hash__Transformations
+from mgraph_ai_service_html.html__fast_api.schemas.dict.Schema__Dict__To__Text__Nodes__Response  import Schema__Dict__To__Text__Nodes__Response
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Request          import Schema__Html__To__Dict__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Response         import Schema__Html__To__Dict__Response
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Hashes__Request  import Schema__Html__To__Dict__Hashes__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Hashes__Response import Schema__Html__To__Dict__Hashes__Response
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Hashes__Request import Schema__Html__To__Html__Hashes__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Request         import Schema__Html__To__Html__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Xxx__Request    import Schema__Html__To__Html__Xxx__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Lines__Request        import Schema__Html__To__Lines__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Nodes__Request  import Schema__Html__To__Text__Nodes__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Request import Schema__Html__To__Text__Hashes__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Hashes__Request  import Schema__Html__To__Html__Hashes__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Request          import Schema__Html__To__Html__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Xxx__Request     import Schema__Html__To__Html__Xxx__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Lines__Request         import Schema__Html__To__Lines__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Nodes__Request   import Schema__Html__To__Text__Nodes__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Request  import Schema__Html__To__Text__Hashes__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Response import Schema__Html__To__Text__Hashes__Response
 
 

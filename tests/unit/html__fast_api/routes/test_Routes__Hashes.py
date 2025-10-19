@@ -1,14 +1,9 @@
-from unittest                                                        import TestCase
-
 import pytest
+from unittest                                                        import TestCase
 from fastapi.testclient                                              import TestClient
 from osbot_fast_api_serverless.fast_api.Serverless__Fast_API__Config import Serverless__Fast_API__Config
-from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import file_name
-
 from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API    import Html_Service__Fast_API
 from osbot_utils.helpers.html.transformers.Html__To__Html_Dict       import Html__To__Html_Dict
-
 
 class test_Routes__Hashes(TestCase):
 
@@ -127,7 +122,7 @@ class test_Routes__Hashes(TestCase):
 
         assert response2.status_code == 200
         html_dict = response2.json()['html_dict']               # todo: BUG: this workflow is wrong, we should be getting an hash mapping here
-        pprint(html_dict)
+        
         hash_mapping = {}                                        # Step 3: Build hash mapping
         for hash_value, node_data in text_nodes.items():         # (simulating external service)
             original_text = node_data['text']

@@ -4,8 +4,7 @@ from osbot_utils.type_safe.primitives.core.Safe_UInt                            
 from osbot_utils.type_safe.primitives.domains.web.safe_str.Safe_Str__Html                           import Safe_Str__Html
 from osbot_utils.helpers.html.transformers.Html_Dict__To__Html                                      import Html_Dict__To__Html
 from osbot_utils.helpers.html.transformers.Html__To__Html_Dict                                      import Html__To__Html_Dict
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe import type_safe
-
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe                                      import type_safe
 from mgraph_ai_service_html.html__fast_api.core.Html__Extract_Text_Nodes                            import Html__Extract_Text_Nodes
 from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations                       import Html__Direct__Transformations
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Hashes__Response    import Schema__Html__To__Dict__Hashes__Response

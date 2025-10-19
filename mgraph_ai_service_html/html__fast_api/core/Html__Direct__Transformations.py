@@ -3,7 +3,7 @@ from osbot_utils.helpers.html.transformers.Html__To__Html_Dict            import
 from osbot_utils.helpers.html.transformers.Html_Dict__To__Html            import Html_Dict__To__Html
 from typing                                                               import Dict
 from osbot_utils.type_safe.primitives.domains.web.safe_str.Safe_Str__Html import Safe_Str__Html
-from mgraph_ai_service_html.html__fast_api.core.Html__Extract_Text_Nodes import Html__Extract_Text_Nodes, DEFAULT_MAX_DEPTH
+from mgraph_ai_service_html.html__fast_api.core.Html__Extract_Text_Nodes  import Html__Extract_Text_Nodes, DEFAULT_MAX_DEPTH
 
 
 
