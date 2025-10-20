@@ -1,4 +1,4 @@
-const response = await fetch('./js/config/endpoints.json');
+const response = await fetch('../v0.1.3/js/config/endpoints.json');
 
 export const Endpoints__Config = await response.json();
 

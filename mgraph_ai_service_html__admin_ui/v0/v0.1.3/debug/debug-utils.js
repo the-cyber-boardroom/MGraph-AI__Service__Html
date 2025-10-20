@@ -34,7 +34,7 @@ function addDebugButtons() {
 
     // Add to page
     document.body.appendChild(container);
-    console.log('✅ Debug buttons added to page');
+    //console.log('✅ Debug buttons added to page');
 }
 
 function createDebugButton(transform) {
@@ -80,7 +80,7 @@ function createDebugButton(transform) {
 
     // Click handler
     btn.addEventListener('click', () => {
-        console.log(`🐛 Debug: Simulating ${transform.label}`);
+        //console.log(`🐛 Debug: Simulating ${transform.label}`);
         simulateTransform(transform.id);
     });
 
@@ -88,7 +88,7 @@ function createDebugButton(transform) {
 }
 
 function simulateTransform(endpointId) {
-    console.log(`🐛 Starting simulation for: ${endpointId}`);
+    //console.log(`🐛 Starting simulation for: ${endpointId}`);
 
     // 1. Get the dropdown selector
     const selector = document.querySelector('#endpoint-selector');
@@ -104,7 +104,7 @@ function simulateTransform(endpointId) {
     // 3. Trigger the 'change' event to update the UI
     const changeEvent = new Event('change', { bubbles: true });
     selector.dispatchEvent(changeEvent);
-    console.log(`✅ Selected "${endpointId}"`);
+    //console.log(`✅ Selected "${endpointId}"`);
 
     // 4. Wait a moment for UI to update, then click Transform
     setTimeout(() => {
@@ -121,7 +121,7 @@ function simulateTransform(endpointId) {
         }
 
         transformBtn.click();
-        console.log('✅ Clicked Transform button');
+        //console.log('✅ Clicked Transform button');
     }, 100);
 }
 
