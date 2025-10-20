@@ -1,10 +1,15 @@
 from unittest                                                               import TestCase
 from fastapi                                                                import FastAPI
 from osbot_fast_api.api.Fast_API                                            import ENV_VAR__FAST_API__AUTH__API_KEY__NAME, ENV_VAR__FAST_API__AUTH__API_KEY__VALUE
-from osbot_fast_api.api.schemas.safe_str.Safe_Str__Fast_API__Route__Prefix  import Safe_Str__Fast_API__Route__Prefix
+from osbot_fast_api.api.schemas.consts.consts__Fast_API                     import EXPECTED_ROUTES__SET_COOKIE
+from osbot_fast_api_serverless.fast_api.routes.Routes__Info                 import ROUTES_PATHS__INFO
+from osbot_fast_api_serverless.utils.Version                                import version__osbot_fast_api_serverless
 from osbot_utils.utils.Env                                                  import get_env
 from starlette.testclient                                                   import TestClient
 from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API           import Html_Service__Fast_API
+from mgraph_ai_service_html.html__fast_api.routes.Routes__Dict              import ROUTES_PATHS__DICT
+from mgraph_ai_service_html.html__fast_api.routes.Routes__Hashes            import ROUTES_PATHS__HASHES
+from mgraph_ai_service_html.html__fast_api.routes.Routes__Html              import ROUTES_PATHS__HTML
 from tests.unit.Service__Fast_API__Test_Objs                                import setup__service_fast_api_test_objs, Service__Fast_API__Test_Objs, TEST_API_KEY__NAME
 
 
@@ -28,7 +33,7 @@ class test_Html_Service__Fast_API__client(TestCase):
             assert self.client              == _.fast_api__client
 
     def test__client__auth(self):
-        path                = '/info/health'
+        path                = '/info/version'
         auth_key_name       = get_env(ENV_VAR__FAST_API__AUTH__API_KEY__NAME )
         auth_key_value      = get_env(ENV_VAR__FAST_API__AUTH__API_KEY__VALUE)
         headers             = {auth_key_name: auth_key_value}
@@ -36,31 +41,20 @@ class test_Html_Service__Fast_API__client(TestCase):
         response__no_auth   = self.client.get(url=path, headers={})
         response__with_auth = self.client.get(url=path, headers=headers)
 
-        assert response__no_auth.status_code == 401
-        assert response__no_auth.json()      == { 'data'   : None,
-                                                  'error'  : None,
-                                                  'message': 'Client API key is missing, you need to set it on a header or cookie',
-                                                  'status' : 'error'}
+        assert response__no_auth.status_code   == 401
+        assert response__no_auth.json()        == { 'data'   : None,
+                                                    'error'  : None,
+                                                    'message': 'Client API key is missing, you need to set it on a header or cookie',
+                                                    'status' : 'error'}
 
-        assert auth_key_name                 is not None
-        assert auth_key_value                is not None
-        #assert response__with_auth.json()    == ROUTES_INFO__HEALTH__RETURN_VALUE
+        assert auth_key_name                   is not None
+        assert auth_key_value                  is not None
+        assert response__with_auth.status_code == 200
+        assert response__with_auth.json()      ==  {'version': version__osbot_fast_api_serverless }
 
     def test__config_fast_api_routes(self):
-        # todo: refactor these route values to the respective Routes_* classes
-        assert self.fast_api.routes_paths() == [ Safe_Str__Fast_API__Route__Prefix('/auth/set-auth-cookie'          ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/auth/set-cookie-form'          ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/html'                  ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/lines'                 ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/dict/to/text/nodes'            ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/hashes/to/html'                ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html-service/{file_path:path}' ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/dict'                  ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/dict/hashes'           ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html'                  ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html/hashes'           ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/html/xxx'              ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/lines'                 ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/text/hashes'           ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/html/to/text/nodes'            ),
-                                                 Safe_Str__Fast_API__Route__Prefix('/info/version'                  )]
+        assert self.fast_api.routes_paths() == sorted(  ROUTES_PATHS__INFO          +
+                                                        EXPECTED_ROUTES__SET_COOKIE +       # todo: fix this on OSBot-Fast-API since this should be ROUTES_PATHS__AUTH
+                                                        ROUTES_PATHS__DICT          +
+                                                        ROUTES_PATHS__HASHES        +
+                                                        ROUTES_PATHS__HTML          )

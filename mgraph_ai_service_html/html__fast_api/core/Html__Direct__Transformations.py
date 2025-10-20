@@ -12,15 +12,15 @@ class Html__Direct__Transformations(Type_Safe):                             # HT
     def html__to__html_dict(self, html: Safe_Str__Html) -> Dict:            # Parse HTML directly
         return Html__To__Html_Dict(html=html).convert()
         
-    def html_dict__to__html(self, html_dict: Dict) -> str:                  # Reconstruct HTML          # todo: replace str with Safe_Str__*
+    def html_dict__to__html(self, html_dict: Dict) -> str:                  # Reconstruct HTML              # todo: replace str with Safe_Str__*
         return Html_Dict__To__Html(root=html_dict).convert()
         
-    def html__to__lines(self, html: Safe_Str__Html) -> str:                 # Format as lines           # todo: replace str with Safe_Str__*
+    def html__to__tree_view(self, html: Safe_Str__Html) -> str:                 # Format as tree_view       # todo: replace str with Safe_Str__*
         if html:
             html_converter = Html__To__Html_Dict(html=html)
             html_converter.convert()
-            lines          = html_converter.print(just_return_lines=True)
-            return "\n".join(lines)
+            tree_view          = html_converter.print(just_return_lines=True)                               # todo: review Html__To__Html_Dict implementation to see if just_return_lines should be renamed to just_return_tree_view
+            return "\n".join(tree_view)
         return ''
         
     def html_dict__to__text_nodes(self, html_dict: Dict                    ,# Extract text nodes

@@ -154,23 +154,27 @@ class test_Routes__Dict(TestCase):
         assert 'Span text'   in all_text
         assert 'Link text'   in all_text
 
-    def test__to__lines(self):                                   # Test line formatting from dict
+    def test__to__tree_view(self):                                   # Test line formatting from dict
         html      = "<html><body><p>Test</p></body></html>"
         html_dict = Html__To__Html_Dict(html=html).convert()
 
-        response = self.client.post('/dict/to/lines',
+        response = self.client.post('/dict/to/tree/view',
                                    json={'html_dict': html_dict})
 
         assert response.status_code == 200
-        lines = response.text
+        tree_view = response.text
 
-        assert isinstance(lines, str)
-        assert 'html' in lines
-        assert 'body' in lines
-        assert 'p'    in lines
-        assert '\n'   in lines                                   # Should have line breaks
+        assert isinstance(tree_view, str)
+        assert 'html'    in tree_view
+        assert 'body'    in tree_view
+        assert 'p'       in tree_view
+        assert '\n'      in tree_view                                   # Should have line breaks
+        assert tree_view == ('html\n'
+                         '    └── body\n'
+                         '        └── p\n '
+                         '           └── TEXT: Test')
 
-    def test__to__lines__nested_structure(self):                 # Test with complex HTML
+    def test__to__tree_view__nested_structure(self):                 # Test with complex HTML
         html = """
         <html>
             <body>
@@ -185,14 +189,14 @@ class test_Routes__Dict(TestCase):
         """
         html_dict = Html__To__Html_Dict(html=html).convert()
 
-        response = self.client.post('/dict/to/lines',
+        response = self.client.post('/dict/to/tree/view',
                                    json={'html_dict': html_dict})
 
         assert response.status_code == 200
-        lines = response.text
+        tree_view = response.text
 
-        assert 'ul' in lines
-        assert 'li' in lines
+        assert 'ul' in tree_view
+        assert 'li' in tree_view
 
     def test__round_trip__dict_to_html_to_dict(self):            # Test round-trip consistency
         original_html = "<html><body><p>Test</p></body></html>"
@@ -219,7 +223,7 @@ class test_Routes__Dict(TestCase):
         response2 = self.client.post('/dict/to/text/nodes',      # Step 3: Extract text
                                     json={'html_dict': html_dict})
 
-        response3 = self.client.post('/dict/to/lines',           # Step 4: Format
+        response3 = self.client.post('/dict/to/tree/view',           # Step 4: Format
                                     json={'html_dict': html_dict})
 
         assert response1.status_code == 200

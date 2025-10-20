@@ -1,6 +1,6 @@
 from unittest                                                                   import TestCase
 from osbot_utils.testing.__                                                     import __
-from osbot_utils.testing.__helpers import obj
+from osbot_utils.testing.__helpers                                              import obj
 from osbot_utils.utils.Objects                                                  import base_classes
 from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations   import Html__Direct__Transformations
 from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
@@ -124,25 +124,25 @@ class test_Html__Direct__Transformations(TestCase):
             assert 'Second' in reconstructed
             assert '<div>'  in reconstructed or '<div' in reconstructed
 
-    def test__html__to__lines(self):                             # Test line formatting
+    def test__html__to__tree_view(self):                             # Test line formatting
         html = "<html><body><p>Test</p></body></html>"
 
         with self.transformations as _:
-            lines = _.html__to__lines(html)
+            tree_view = _.html__to__tree_view(html)
 
-            assert isinstance(lines, str)
-            assert 'html' in lines
-            assert 'body' in lines
-            assert 'p'    in lines
-            assert '\n'   in lines                               # Should have line breaks
-            assert lines == 'html\n    └── body\n        └── p\n            └── TEXT: Test'
+            assert isinstance(tree_view, str)
+            assert 'html'    in tree_view
+            assert 'body'    in tree_view
+            assert 'p'       in tree_view
+            assert '\n'      in tree_view                               # Should have line breaks
+            assert tree_view == 'html\n    └── body\n        └── p\n            └── TEXT: Test'
 
-    def test__html__to__lines__empty(self):                      # Test with empty HTML
+    def test__html__to__tree_view__empty(self):                      # Test with empty HTML
         html = ""
 
         with self.transformations as _:
-            lines = _.html__to__lines(html)
-            assert isinstance(lines, str)
+            tree_view = _.html__to__tree_view(html)
+            assert isinstance(tree_view, str)
 
     def test__html_dict__to__text_nodes(self):                   # Test text node extraction
         html = "<html><body><p>Hello</p><span>World</span></body></html>"

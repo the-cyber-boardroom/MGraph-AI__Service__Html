@@ -10,11 +10,20 @@ from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Hashes__Request  import Schema__Html__To__Html__Hashes__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Request          import Schema__Html__To__Html__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Html__Xxx__Request     import Schema__Html__To__Html__Xxx__Request
-from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Lines__Request         import Schema__Html__To__Lines__Request
+from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Tree_View__Request     import Schema__Html__To__Tree_View__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Nodes__Request   import Schema__Html__To__Text__Nodes__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Request  import Schema__Html__To__Text__Hashes__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Response import Schema__Html__To__Text__Hashes__Response
 
+ROUTES_PATHS__HTML = [  '/html-service/{file_path:path}',
+                        '/html/to/dict'                 ,
+                        '/html/to/dict/hashes'          ,
+                        '/html/to/html'                 ,
+                        '/html/to/html/hashes'          ,
+                        '/html/to/html/xxx'             ,
+                        '/html/to/tree/view'            ,
+                        '/html/to/text/hashes'          ,
+                        '/html/to/text/nodes'           ]
 
 class Routes__Html(Fast_API__Routes):                                      # HTML transformation routes
     tag                        : str                       = 'html'
@@ -59,10 +68,10 @@ class Routes__Html(Fast_API__Routes):                                      # HTM
                                                        total_nodes       = len(text_nodes)                                        ,
                                                        max_depth_reached = self.html_hash_transformations.check_depth_exceeded(html_dict, request.max_depth))
     
-    def to__lines(self, request: Schema__Html__To__Lines__Request
-                   ) -> PlainTextResponse:
-        lines = self.html_direct_transformations.html__to__lines(request.html)
-        return PlainTextResponse(lines)
+    def to__tree__view(self, request: Schema__Html__To__Tree_View__Request
+                        ) -> PlainTextResponse:
+        tree_view = self.html_direct_transformations.html__to__tree_view(request.html)
+        return PlainTextResponse(tree_view)
     
     def to__html__hashes(self, request: Schema__Html__To__Html__Hashes__Request
                           ) -> HTMLResponse:
@@ -102,7 +111,7 @@ class Routes__Html(Fast_API__Routes):                                      # HTM
         self.add_route_post(self.to__dict         )                        # Atomic operations
         self.add_route_post(self.to__html         )
         self.add_route_post(self.to__text__nodes  )                        # Compound operations
-        self.add_route_post(self.to__lines        )
+        self.add_route_post(self.to__tree__view   )
         self.add_route_post(self.to__html__hashes )
         self.add_route_post(self.to__html__xxx    )
         self.add_route_post(self.to__dict__hashes )                        # Hash replacement workflow

@@ -4,6 +4,7 @@ from typing                                                                     
 from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations               import Html__Direct__Transformations
 from mgraph_ai_service_html.html__fast_api.schemas.hashes.Schema__Hashes__To__Html__Request import Schema__Hashes__To__Html__Request
 
+ROUTES_PATHS__HASHES = [ '/hashes/to/html' ]
 
 class Routes__Hashes(Fast_API__Routes):                         # Hash reconstruction
     tag                        : str                       = 'hashes'

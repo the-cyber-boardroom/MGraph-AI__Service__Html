@@ -183,22 +183,22 @@ class test_Routes__Html(TestCase):
         assert 'alert'        not in all_text                    # Should NOT capture script
         assert 'color: red'   not in all_text                    # Should NOT capture style
 
-    def test__to__lines(self):                                   # Test line formatting
+    def test__to__tree_view(self):                                   # Test line formatting
         html = "<html><body><p>Test</p></body></html>"
 
-        response = self.client.post('/html/to/lines',
+        response = self.client.post('/html/to/tree/view',
                                    json={'html': html})
 
         assert response.status_code == 200
-        lines = response.text
+        tree_view = response.text
 
-        assert isinstance(lines, str)
-        assert 'html' in lines
-        assert 'body' in lines
-        assert 'p'    in lines
-        assert '\n'   in lines                                   # Should have line breaks
+        assert isinstance(tree_view, str)
+        assert 'html' in tree_view
+        assert 'body' in tree_view
+        assert 'p'    in tree_view
+        assert '\n'   in tree_view                                   # Should have line breaks
 
-    def test__to__lines__complex_structure(self):                # Test with nested HTML
+    def test__to__tree_view__complex_structure(self):                # Test with nested HTML
         html = """
         <html>
             <body>
@@ -210,15 +210,15 @@ class test_Routes__Html(TestCase):
         </html>
         """
 
-        response = self.client.post('/html/to/lines',
+        response = self.client.post('/html/to/tree/view',
                                    json={'html': html})
 
         assert response.status_code == 200
-        lines = response.text
+        tree_view = response.text
 
-        assert 'div'  in lines
-        assert 'p'    in lines
-        assert 'span' in lines
+        assert 'div'  in tree_view
+        assert 'p'    in tree_view
+        assert 'span' in tree_view
 
     def test__to__html__hashes(self):                            # Test hash replacement
         html = "<html><body><p>Test Content</p></body></html>"

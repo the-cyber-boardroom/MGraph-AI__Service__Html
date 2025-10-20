@@ -1,6 +1,5 @@
 from osbot_aws.aws.lambda_.boto3__lambda import load_dependencies
-
-LAMBDA_DEPENDENCIES__HTML_SERVICE = ['osbot-fast-api-serverless==v1.23.0']
+from mgraph_ai_service_html.config       import LAMBDA_DEPENDENCIES__HTML_SERVICE
 
 load_dependencies(LAMBDA_DEPENDENCIES__HTML_SERVICE)
 
