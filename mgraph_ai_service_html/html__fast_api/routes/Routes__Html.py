@@ -15,8 +15,7 @@ from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Request  import Schema__Html__To__Text__Hashes__Request
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Text__Hashes__Response import Schema__Html__To__Text__Hashes__Response
 
-ROUTES_PATHS__HTML = [  '/html-service/{file_path:path}',
-                        '/html/to/dict'                 ,
+ROUTES_PATHS__HTML = [  '/html/to/dict'                 ,
                         '/html/to/dict/hashes'          ,
                         '/html/to/html'                 ,
                         '/html/to/html/hashes'          ,
