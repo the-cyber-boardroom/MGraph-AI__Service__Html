@@ -24,11 +24,11 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
                     "max_depth" : 256           }
 
         response = self.client.post("/html/to/dict/hashes", json=payload)
+        data     = response.json()
 
-        assert response.status_code            == 200
-        data = response.json()
+        assert response.status_code  == 200
         assert "html_dict"           in data
-        assert "text_hashes_mapping" in data
+        assert "hash_mapping"        in data
         assert "node_count"          in data
         assert "max_depth"           in data
         assert "total_text_hashes"   in data
@@ -38,7 +38,7 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
                                                            attrs = __()                  ,
                                                            nodes = [ __( type = 'TEXT'   ,
                                                                         data = '0cbc6611f5' ) ] ) ,
-                                 text_hashes_mapping = __( _0cbc6611f5 = 'Test' )         ,
+                                 hash_mapping        = __( _0cbc6611f5 = 'Test' )         ,
                                  node_count          = 2                                  ,
                                  max_depth           = 1                                  ,
                                  total_text_hashes   = 1                                  ,
@@ -64,8 +64,8 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         assert response.status_code                      == 200
         data = response.json()
         assert data["total_text_hashes"]                 >= 4    # Title, Paragraph, Item 1, Item 2
-        assert type(data["text_hashes_mapping"])         is dict
-        assert len(data["text_hashes_mapping"])          == data["total_text_hashes"]
+        assert type(data["hash_mapping"])         is dict
+        assert len(data["hash_mapping"])          == data["total_text_hashes"]
 
         assert obj(data)                                 == __( html_dict    = __( tag   = 'div' ,
                                                                                    attrs = __()    ,
@@ -93,7 +93,7 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
                                                                                                                 attrs = __()            ,
                                                                                                                 nodes = [ __( type = 'TEXT'          ,
                                                                                                                               data = '9eda28f018' ) ] ) ] ) ] ) ,
-                                                         text_hashes_mapping = __(  b78a322350  = 'Title'           ,
+                                                         hash_mapping        = __(  b78a322350  = 'Title'           ,
                                                                                    _47b74c884c  = 'Paragraph with ' ,
                                                                                    _69dcab4a73  = 'bold'            ,
                                                                                     ea1f576750  = ' text'           ,
@@ -112,12 +112,12 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
 
         assert response.status_code == 200                                           # empty dict handled ok
 
-        assert response.json() == { 'html_dict'           : {} ,
-                                     'max_depth'          : 0  ,
+        assert response.json() == { 'html_dict'           : {}    ,
+                                     'max_depth'          : 0     ,
                                      'max_depth_reached'  : False ,
-                                     'node_count'         : 0  ,
-                                     'text_hashes_mapping': {} ,
-                                     'total_text_hashes'  : 0  }
+                                     'node_count'         : 0     ,
+                                     'hash_mapping'       : {}    ,
+                                     'total_text_hashes'  : 0     }
 
 
     def test__http_post__to__dict__hashes__default_max_depth(self): # Test max_depth default value
@@ -132,16 +132,14 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         assert data["max_depth"]                         <= 256  # Uses default
 
     def test__http_post__to__text__hashes__returns_200(self):    # Test lightweight endpoint
-        payload = {
-            "html"      : "<p>Test</p>",
-            "max_depth" : 256
-        }
+        payload = { "html"      : "<p>Test</p>",
+                    "max_depth" : 256          }
 
         response = self.client.post("/html/to/text/hashes", json=payload)
+        data     = response.json()
 
-        assert response.status_code                      == 200
-        data = response.json()
-        assert "text_hashes_mapping" in data
+        assert response.status_code  == 200
+        assert "hash_mapping"        in data
         assert "total_text_hashes"   in data
         assert "max_depth_reached"   in data
         assert "html_dict"           not in data                 # Lightweight response
@@ -153,12 +151,11 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         }
 
         response = self.client.post("/html/to/text/hashes", json=payload)
+        data     = response.json()
 
-        assert response.status_code                      == 200
-        data = response.json()
-
-        assert len(data)                                 == 3    # Only 3 fields
-        assert "text_hashes_mapping" in data
+        assert response.status_code  == 200
+        assert len(data)             == 3    # Only 3 fields
+        assert "hash_mapping"        in data
         assert "total_text_hashes"   in data
         assert "max_depth_reached"   in data
 
@@ -168,7 +165,7 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         response = self.client.post("/html/to/text/hashes", json=payload)
 
         assert response.status_code == 200
-        assert response.json()      == {'max_depth_reached': False, 'text_hashes_mapping': {}, 'total_text_hashes': 0}
+        assert response.json()      == {'max_depth_reached': False, 'hash_mapping': {}, 'total_text_hashes': 0}
 
     def test__e2e__complete_workflow_via_http(self):             # Test complete workflow via HTTP
         extract_payload = { "html": "<p>Original text</p>" }
@@ -177,7 +174,7 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         extract_data = extract_response.json()
 
         modified_mapping = {}
-        for hash_value, original_text in extract_data["text_hashes_mapping"].items():
+        for hash_value, original_text in extract_data["hash_mapping"].items():
             modified_mapping[hash_value] = "Modified text"
 
         reconstruct_payload = { "html_dict"    : extract_data["html_dict"],
@@ -201,7 +198,7 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         assert extract_data["total_text_hashes"]         == 3
 
         modified_mapping = {}
-        for hash_value, text in extract_data["text_hashes_mapping"].items():
+        for hash_value, text in extract_data["hash_mapping"].items():
             modified_mapping[hash_value] = f"NEW_{text}"
 
         reconstruct_payload = {
@@ -232,7 +229,7 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
         extract_response = self.client.post("/html/to/dict/hashes", json=extract_payload)
         extract_data = extract_response.json()
 
-        modified_mapping = extract_data["text_hashes_mapping"]  # Keep original
+        modified_mapping = extract_data["hash_mapping"]  # Keep original
 
         reconstruct_payload = { "html_dict"    : extract_data["html_dict"],
                                 "hash_mapping" : modified_mapping }
@@ -388,5 +385,5 @@ class test_Routes__Html__to__Hashes__to__Html__client(TestCase):
                                                  'max_depth'           : 1                                                       ,
                                                  'max_depth_reached'   : False                                                  ,
                                                  'node_count'          : 2                                                       ,
-                                                 'text_hashes_mapping' : { '0cbc6611f5': 'Test' }                                ,
+                                                 'hash_mapping' : { '0cbc6611f5': 'Test' }                                ,
                                                  'total_text_hashes'   : 1                                                       }

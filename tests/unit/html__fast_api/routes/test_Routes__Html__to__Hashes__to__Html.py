@@ -19,23 +19,21 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         cls.routes_hashes = Routes__Hashes()
 
     def test__to__dict__hashes__simple_html(self):               # Test simple HTML with single text node
-        html    = "<p>Hello</p>"
-        request = Schema__Html__To__Dict__Hashes__Request(html=html)
+        html       = "<p>Hello</p>"
+        request    = Schema__Html__To__Dict__Hashes__Request(html=html)
+        response   = self.routes_html.to__dict__hashes(request)
+        hash_value = list(response.hash_mapping.keys())[0]
 
-        response = self.routes_html.to__dict__hashes(request)
-
-        assert type(response)                            is Schema__Html__To__Dict__Hashes__Response
-        assert response.html_dict                        is not None
-        assert type(response.text_hashes_mapping)        is Type_Safe__Dict
-        assert response.total_text_hashes                >  0
-        assert response.node_count                       >  0
-        assert response.max_depth                        >= 0
-        assert type(response.max_depth_reached)          is bool
-
-        assert len(response.text_hashes_mapping)         == 1     # Single text node
-        hash_value = list(response.text_hashes_mapping.keys())[0]
-        assert len(hash_value)                           == 10    # Hash is 10 characters
-        assert response.text_hashes_mapping[hash_value]  == "Hello"
+        assert type(response)                     is Schema__Html__To__Dict__Hashes__Response
+        assert response.html_dict                 is not None
+        assert type(response.hash_mapping)        is Type_Safe__Dict
+        assert response.total_text_hashes         >  0
+        assert response.node_count                >  0
+        assert response.max_depth                 >= 0
+        assert type(response.max_depth_reached)   is bool
+        assert len(response.hash_mapping)         == 1     # Single text node
+        assert len(hash_value)                    == 10    # Hash is 10 characters
+        assert response.hash_mapping[hash_value]  == "Hello"
 
     def test__to__dict__hashes__multiple_text_nodes(self):       # Test multiple text nodes
         html    = "<div><p>First</p><span>Second</span><p>Third</p></div>"
@@ -43,10 +41,10 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         response = self.routes_html.to__dict__hashes(request)
 
-        assert response.total_text_hashes                == 3
-        assert len(response.text_hashes_mapping)         == 3
+        assert response.total_text_hashes   == 3
+        assert len(response.hash_mapping)   == 3
 
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
         assert "First"  in text_values
         assert "Second" in text_values
         assert "Third"  in text_values
@@ -65,7 +63,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
                                                                              attrs = __()  ,
                                                                              nodes = [ __( type = 'TEXT'          ,
                                                                                            data = '168909c0b6' ) ] ) ] ) ,
-                                     text_hashes_mapping = __( _7fb55ed0b7 = 'First'  ,
+                                     hash_mapping        = __( _7fb55ed0b7 = 'First'  ,
                                                                 c22cf8376b = 'Second' ,
                                                                _168909c0b6 = 'Third'  ) ,
                                      node_count          = 7                         ,
@@ -81,7 +79,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         assert response.total_text_hashes                == 1
         assert response.max_depth                        >  0
-        assert "Nested" in response.text_hashes_mapping.values()
+        assert "Nested" in response.hash_mapping.values()
 
     def test__to__dict__hashes__empty_tags(self):                # Test empty tags produce no text nodes
         html    = "<div><p></p><span></span></div>"
@@ -89,8 +87,8 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         response = self.routes_html.to__dict__hashes(request)
 
-        assert response.total_text_hashes                == 0     # Empty tags create no text nodes
-        assert len(response.text_hashes_mapping)         == 0
+        assert response.total_text_hashes         == 0     # Empty tags create no text nodes
+        assert len(response.hash_mapping)         == 0
 
     def test__to__dict__hashes__special_characters(self):        # Test special characters preserved
         html    = '<p>Hello & "World" <span>\'Test\'</span></p>'
@@ -99,7 +97,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         response = self.routes_html.to__dict__hashes(request)
 
         assert response.total_text_hashes                >  0
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
         assert any('&' in val or '"' in val or "'" in val for val in text_values)
 
     def test__to__dict__hashes__unicode_characters(self):        # Test Unicode support
@@ -109,7 +107,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         response = self.routes_html.to__dict__hashes(request)
 
         assert response.total_text_hashes                == 1
-        text_value = list(response.text_hashes_mapping.values())[0]
+        text_value = list(response.hash_mapping.values())[0]
         assert "世界" in text_value
         assert "🌍"  in text_value
 
@@ -129,7 +127,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         response = self.routes_html.to__dict__hashes(request)
 
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
         assert "Visible text"                            in text_values
         assert not any("color: red"  in val for val in text_values)
         assert not any("console.log" in val for val in text_values)
@@ -151,7 +149,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         response = self.routes_html.to__dict__hashes(request)
 
-        for hash_value in response.text_hashes_mapping.keys():
+        for hash_value in response.hash_mapping.keys():
             assert len(hash_value)                       == 10
             assert all(c in '0123456789abcdef' for c in hash_value.lower())
 
@@ -169,10 +167,10 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         response = self.routes_html.to__text__hashes(request)
 
-        assert type(response)                            is Schema__Html__To__Text__Hashes__Response
-        assert type(response.text_hashes_mapping)        is Type_Safe__Dict
-        assert response.total_text_hashes                >  0
-        assert type(response.max_depth_reached)          is bool
+        assert type(response)                    is Schema__Html__To__Text__Hashes__Response
+        assert type(response.hash_mapping)       is Type_Safe__Dict
+        assert response.total_text_hashes        >  0
+        assert type(response.max_depth_reached)  is bool
 
         assert not hasattr(response, 'html_dict')                # No html_dict in lightweight response
         assert not hasattr(response, 'node_count')               # No node_count either
@@ -184,7 +182,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         response = self.routes_html.to__text__hashes(request)
 
         assert response.total_text_hashes                == 2
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
         assert "First"  in text_values
         assert "Second" in text_values
 
@@ -203,14 +201,14 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
 
         response = self.routes_html.to__text__hashes(request)
 
-        assert response.total_text_hashes                == 0
-        assert len(response.text_hashes_mapping)         == 0
+        assert response.total_text_hashes         == 0
+        assert len(response.hash_mapping)         == 0
 
     def test__complete_workflow__extract_modify_reconstruct(self): # Test complete hash workflow
         original_html        = "<p>Original text</p>"
         extract_request      = Schema__Html__To__Dict__Hashes__Request(html=original_html)
         extract_response     = self.routes_html.to__dict__hashes(extract_request)
-        original_hash        = list(extract_response.text_hashes_mapping.keys())[0]
+        original_hash        = list(extract_response.hash_mapping.keys())[0]
         modified_mapping     = { original_hash: "Modified text" }
         reconstruct_request  = Schema__Hashes__To__Html__Request(html_dict    = extract_response.html_dict,
                                                                  hash_mapping = modified_mapping          )
@@ -218,7 +216,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         reconstructed_html   = reconstruct_response.body.decode('utf-8')
 
         assert extract_response.total_text_hashes                  == 1
-        assert extract_response.text_hashes_mapping[original_hash] == "Original text"
+        assert extract_response.hash_mapping[original_hash] == "Original text"
         assert "Modified text"                                     in reconstructed_html
         assert "Original text"                                 not in reconstructed_html
         assert reconstructed_html                                  == '<p>Modified text</p>\n'
@@ -229,7 +227,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         extract_response = self.routes_html.to__dict__hashes(extract_request)
 
         modified_mapping = {}
-        for hash_value, original_text in extract_response.text_hashes_mapping.items():
+        for hash_value, original_text in extract_response.hash_mapping.items():
             modified_mapping[hash_value] = f"NEW_{original_text}"
 
         reconstruct_request = Schema__Hashes__To__Html__Request(html_dict    = extract_response.html_dict,
@@ -247,13 +245,13 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         extract_response = self.routes_html.to__dict__hashes(extract_request)
 
         modified_mapping = {}
-        for hash_value, original_text in extract_response.text_hashes_mapping.items():
+        for hash_value, original_text in extract_response.hash_mapping.items():
             if original_text == "Modify this":
                 modified_mapping[hash_value] = "CHANGED"
             else:
                 modified_mapping[hash_value] = original_text         # Keep original
 
-        assert extract_response.text_hashes_mapping == { Safe_Str__Hash('42d0b3e2a9'): 'Keep this'  ,
+        assert extract_response.hash_mapping == { Safe_Str__Hash('42d0b3e2a9'): 'Keep this'  ,
                                                          Safe_Str__Hash('eebe4f5462'): 'Modify this'}
         assert modified_mapping                     == { Safe_Str__Hash('42d0b3e2a9'): 'Keep this'  ,
                                                          Safe_Str__Hash('eebe4f5462'): 'CHANGED'    }
@@ -274,7 +272,7 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         response_dict = self.routes_html.to__dict__hashes(request_dict)
         response_text = self.routes_html.to__text__hashes(request_text)
 
-        assert response_dict.text_hashes_mapping         == response_text.text_hashes_mapping
+        assert response_dict.hash_mapping         == response_text.hash_mapping
         assert response_dict.total_text_hashes           == response_text.total_text_hashes
 
     def test__html_with_only_whitespace(self):                   # Test whitespace-only text
@@ -293,8 +291,8 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         response = self.routes_html.to__dict__hashes(request)
 
         assert response.total_text_hashes                >  0     # Should parse without error
-        assert "Unclosed paragraph" in response.text_hashes_mapping.values() or \
-               "Nested wrong"       in response.text_hashes_mapping.values()
+        assert "Unclosed paragraph" in response.hash_mapping.values() or \
+               "Nested wrong"       in response.hash_mapping.values()
 
     def test__very_large_html(self):                             # Test performance with large HTML
         items   = "".join([f"<li>Item {i}</li>" for i in range(100)])
@@ -316,21 +314,21 @@ class test_Routes__Html__to__Hashes__to__Html(TestCase):
         response = self.routes_html.to__dict__hashes(request)
 
         assert hasattr(response, 'html_dict')
-        assert hasattr(response, 'text_hashes_mapping')
+        assert hasattr(response, 'hash_mapping')
 
         hash_request = Schema__Hashes__To__Html__Request(
             html_dict    = response.html_dict,
-            hash_mapping = response.text_hashes_mapping
+            hash_mapping = response.hash_mapping
         )
         assert hash_request                              is not None
 
-    def test__text_hashes_mapping_is_dict_hash_to_str(self):     # Test mapping type correctness
+    def test__hash_mapping_is_dict_hash_to_str(self):     # Test mapping type correctness
         html    = "<p>Test</p>"
         request = Schema__Html__To__Dict__Hashes__Request(html=html)
 
         response = self.routes_html.to__dict__hashes(request)
 
-        for key, value in response.text_hashes_mapping.items():
+        for key, value in response.hash_mapping.items():
             assert type(key)                             is Safe_Str__Hash
             assert len(key)                              == 10                  # Hash length
             assert type(value)                           is str                 # Original text

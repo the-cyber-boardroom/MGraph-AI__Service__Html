@@ -29,22 +29,22 @@ class test_Html__Hash__Transformations(TestCase):
 
         assert type(response)                                is Schema__Html__To__Dict__Hashes__Response
         assert response.html_dict                            is not None
-        assert type(response.text_hashes_mapping)            is Type_Safe__Dict
+        assert type(response.hash_mapping)                   is Type_Safe__Dict
         assert response.total_text_hashes                    == 1
         assert response.node_count                           >  0
         assert response.max_depth                            >= 0
         assert type(response.max_depth_reached)              is bool
 
-        hash_value = list(response.text_hashes_mapping.keys())[0]
+        hash_value = list(response.hash_mapping.keys())[0]
         assert len(hash_value)                               == 10    # 10-char hash
-        assert response.text_hashes_mapping[hash_value]      == "Hello"
+        assert response.hash_mapping[hash_value]             == "Hello"
         assert response.json()                               == { 'html_dict'           : { 'attrs' : {}                                         ,
                                                                                             'nodes' : [ { 'data': '8b1a9953c4', 'type': 'TEXT' } ],
                                                                                             'tag'   : 'p'                                         } ,
                                                                    'max_depth'          : 1                                                       ,
                                                                    'max_depth_reached'  : False                                                  ,
                                                                    'node_count'         : 2                                                       ,
-                                                                   'text_hashes_mapping': { '8b1a9953c4': 'Hello' }                               ,
+                                                                   'hash_mapping'       : { '8b1a9953c4': 'Hello' }                               ,
                                                                    'total_text_hashes'  : 1                                                       }
 
 
@@ -52,7 +52,7 @@ class test_Html__Hash__Transformations(TestCase):
                                                                                               attrs = __()                              ,
                                                                                               nodes = [__( type = 'TEXT',
                                                                                                            data = '8b1a9953c4' )]       ) ,
-                                                                    text_hashes_mapping = __(_8b1a9953c4 = 'Hello')                      ,
+                                                                    hash_mapping        = __(_8b1a9953c4 = 'Hello')                      ,
                                                                     node_count          = 2                                              ,
                                                                     max_depth           = 1                                              ,
                                                                     total_text_hashes   = 1                                              ,
@@ -62,16 +62,16 @@ class test_Html__Hash__Transformations(TestCase):
     def test__html__to__dict__hashes__multiple_text_nodes(self): # Test multiple text nodes
         html        = Safe_Str__Html("<div><p>First</p><span>Second</span><p>Third</p></div>")
         response    = self.transformations.html__to__dict__hashes(html)
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
 
-        assert response.total_text_hashes                    == 3
-        assert len(response.text_hashes_mapping)             == 3
-        assert type(response.text_hashes_mapping)            is Type_Safe__Dict
-        assert "First"  in text_values
-        assert "Second" in text_values
-        assert "Third"  in text_values
+        assert response.total_text_hashes    == 3
+        assert len(response.hash_mapping)    == 3
+        assert type(response.hash_mapping)   is Type_Safe__Dict
+        assert "First"                       in text_values
+        assert "Second"                      in text_values
+        assert "Third"                       in text_values
 
-        assert obj(response.text_hashes_mapping) == __(_7fb55ed0b7='First' ,
+        assert obj(response.hash_mapping) == __(_7fb55ed0b7='First' ,
                                                         c22cf8376b='Second',
                                                        _168909c0b6='Third' )
 
@@ -81,19 +81,19 @@ class test_Html__Hash__Transformations(TestCase):
 
         response = self.transformations.html__to__dict__hashes(html)
 
-        assert response.total_text_hashes                    == 1
-        assert response.max_depth                            >  0
-        assert "Nested" in response.text_hashes_mapping.values()
-        assert obj(response.text_hashes_mapping) == __(_13c479c348='Nested')
+        assert response.total_text_hashes   == 1
+        assert response.max_depth           >  0
+        assert "Nested"                     in response.hash_mapping.values()
+        assert obj(response.hash_mapping)   == __(_13c479c348='Nested')
 
     def test__html__to__dict__hashes__empty_tags(self):          # Test empty tags produce no text
         html = Safe_Str__Html("<div><p></p><span></span></div>")
 
         response = self.transformations.html__to__dict__hashes(html)
 
-        assert response.total_text_hashes                    == 0
-        assert len(response.text_hashes_mapping)             == 0
-        assert obj(response.text_hashes_mapping)             == __()
+        assert response.total_text_hashes   == 0
+        assert len(response.hash_mapping)   == 0
+        assert obj(response.hash_mapping)   == __()
 
     def test__html__to__dict__hashes__with_max_depth(self):      # Test max_depth parameter
         html         = Safe_Str__Html("<div><div><div><div><p>Deep</p></div></div></div></div>")
@@ -103,7 +103,7 @@ class test_Html__Hash__Transformations(TestCase):
 
         assert response.max_depth_reached                    == True
         assert response.total_text_hashes                    == 0    # Too deep to extract
-        assert obj(response.text_hashes_mapping)             == __()
+        assert obj(response.hash_mapping)             == __()
 
     def test__html__to__dict__hashes__default_max_depth(self):   # Test default max_depth value
         html = Safe_Str__Html("<p>Test</p>")
@@ -112,7 +112,7 @@ class test_Html__Hash__Transformations(TestCase):
 
         assert response.max_depth_reached                    == False
         assert response.total_text_hashes                    == 1
-        assert obj(response.text_hashes_mapping)             == __(_0cbc6611f5='Test')
+        assert obj(response.hash_mapping)             == __(_0cbc6611f5='Test')
 
     def test__html__to__dict__hashes__complex_structure(self):   # Test complex HTML structure
         html = Safe_Str__Html("""<div>
@@ -155,7 +155,7 @@ class test_Html__Hash__Transformations(TestCase):
                                                                           attrs = __()            ,
                                                                           nodes = [ __( type = 'TEXT'          ,
                                                                    data = '9eda28f018' ) ] ) ] ) ] ) ,
-                                                 text_hashes_mapping = __( b78a322350  = 'Title'          ,
+                                                 hash_mapping = __( b78a322350  = 'Title'          ,
                                                                            _47b74c884c = 'Paragraph with ',
                                                                            _69dcab4a73 = 'bold'           ,
                                                                            ea1f576750  = ' text'          ,
@@ -192,7 +192,7 @@ class test_Html__Hash__Transformations(TestCase):
                                     'max_depth': 3,
                                     'max_depth_reached': False,
                                     'node_count': 13,
-                                    'text_hashes_mapping': {'47b74c884c': 'Paragraph with ',
+                                    'hash_mapping': {'47b74c884c': 'Paragraph with ',
                                                             '69dcab4a73': 'bold',
                                                             '9eda28f018': 'Item 2',
                                                             'b78a322350': 'Title',
@@ -204,7 +204,7 @@ class test_Html__Hash__Transformations(TestCase):
     def test__html__to__dict__hashes__special_characters(self):  # Test special characters preserved
         html        = Safe_Str__Html('<p>Hello & "World"</p>')
         response    = self.transformations.html__to__dict__hashes(html)
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
 
         assert response.total_text_hashes    >  0
         assert any('&' in val or '"'        in val for val in text_values)
@@ -213,26 +213,26 @@ class test_Html__Hash__Transformations(TestCase):
     def test__html__to__dict__hashes__unicode_text(self):        # Test Unicode support
         html       = Safe_Str__Html("<p>Hello 世界 🌍</p>")
         response   = self.transformations.html__to__dict__hashes(html)
-        text_value = list(response.text_hashes_mapping.values())[0]
+        text_value = list(response.hash_mapping.values())[0]
 
         assert response.total_text_hashes                   == 1
         assert "世界"                                        in text_value
         assert "🌍"                                         in text_value
-        assert response.text_hashes_mapping.values()        == ['Hello 世界 🌍']
-        assert response.text_hashes_mapping.values().obj () == ['Hello 世界 🌍']
-        assert response.text_hashes_mapping.values().json() == ['Hello 世界 🌍']
+        assert response.hash_mapping.values()        == ['Hello 世界 🌍']
+        assert response.hash_mapping.values().obj () == ['Hello 世界 🌍']
+        assert response.hash_mapping.values().json() == ['Hello 世界 🌍']
 
     def test__html__to__dict__hashes__hash_format(self):         # Test hash format is correct
         html = Safe_Str__Html("<p>Test</p>")
 
         response = self.transformations.html__to__dict__hashes(html)
 
-        for hash_value in response.text_hashes_mapping.keys():
+        for hash_value in response.hash_mapping.keys():
             assert len(hash_value)                           == 10
             assert all(c in '0123456789abcdef' for c in hash_value.lower())
 
-        assert response.text_hashes_mapping.keys().obj () == ['0cbc6611f5']
-        assert response.text_hashes_mapping.keys().json() == ['0cbc6611f5']
+        assert response.hash_mapping.keys().obj () == ['0cbc6611f5']
+        assert response.hash_mapping.keys().json() == ['0cbc6611f5']
 
     def test__html__to__text__hashes__simple_html(self):         # Test lightweight endpoint
         html = Safe_Str__Html("<p>Hello</p>")
@@ -240,19 +240,19 @@ class test_Html__Hash__Transformations(TestCase):
         response = self.transformations.html__to__text__hashes(html)
 
         assert type(response)                                is Schema__Html__To__Text__Hashes__Response
-        assert type(response.text_hashes_mapping)            is Type_Safe__Dict
+        assert type(response.hash_mapping)            is Type_Safe__Dict
         assert response.total_text_hashes                    == 1
         assert type(response.max_depth_reached)              is bool
         assert hasattr(response, 'html_dict')                is False                                               # No html_dict in lightweight
         assert hasattr(response, 'node_count')               is False                                               # No node_count either
-        assert response.obj()                                == __(text_hashes_mapping = __(_8b1a9953c4='Hello'),
+        assert response.obj()                                == __(hash_mapping = __(_8b1a9953c4='Hello'),
                                                                    total_text_hashes   = 1                      ,
                                                                    max_depth_reached   = False                  )
 
     def test__html__to__text__hashes__multiple_nodes(self):      # Test multiple nodes lightweight
         html        = Safe_Str__Html("<div><p>First</p><span>Second</span></div>")
         response    = self.transformations.html__to__text__hashes(html)
-        text_values = list(response.text_hashes_mapping.values())
+        text_values = list(response.hash_mapping.values())
         assert response.total_text_hashes   == 2
         assert "First"                      in text_values
         assert "Second"                     in text_values
@@ -265,7 +265,7 @@ class test_Html__Hash__Transformations(TestCase):
 
         assert response.max_depth_reached   == True
         assert response.total_text_hashes   == 0
-        assert response.obj()               == __(text_hashes_mapping =__() ,
+        assert response.obj()               == __(hash_mapping =__() ,
                                                  total_text_hashes    = 0   ,
                                                  max_depth_reached    = True)
 
@@ -275,8 +275,8 @@ class test_Html__Hash__Transformations(TestCase):
         response = self.transformations.html__to__text__hashes(html)
 
         assert response.total_text_hashes        == 0
-        assert len(response.text_hashes_mapping) == 0
-        assert response.obj()                    == __(text_hashes_mapping =__()  ,
+        assert len(response.hash_mapping) == 0
+        assert response.obj()                    == __(hash_mapping =__()  ,
                                                        total_text_hashes   = 0    ,
                                                        max_depth_reached   = False)
 
@@ -286,7 +286,7 @@ class test_Html__Hash__Transformations(TestCase):
         response_dict = self.transformations.html__to__dict__hashes(html)
         response_text = self.transformations.html__to__text__hashes(html)
 
-        assert response_dict.text_hashes_mapping             == response_text.text_hashes_mapping
+        assert response_dict.hash_mapping             == response_text.hash_mapping
         assert response_dict.total_text_hashes               == response_text.total_text_hashes
 
         assert response_dict.obj() == __( html_dict=__(tag='p',
@@ -295,12 +295,12 @@ class test_Html__Hash__Transformations(TestCase):
                                                               __(tag='span',
                                                                  attrs=__(),
                                                                  nodes=[__(type='TEXT', data='f15c1cae78')])]),
-                                          text_hashes_mapping=__(_0cbc6611f5='Test', f15c1cae78='Content'),
+                                          hash_mapping=__(_0cbc6611f5='Test', f15c1cae78='Content'),
                                           node_count=4,
                                           max_depth=2,
                                           total_text_hashes=2,
                                           max_depth_reached=False)
-        assert response_text.obj() == __( text_hashes_mapping = __(_0cbc6611f5 ='Test'   ,
+        assert response_text.obj() == __( hash_mapping = __(_0cbc6611f5 ='Test'   ,
                                                                     f15c1cae78 ='Content'),
                                           total_text_hashes   = 2   ,
                                           max_depth_reached   = False)
@@ -481,19 +481,19 @@ class test_Html__Hash__Transformations(TestCase):
     def test__integration__complete_workflow(self):              # Test complete hash workflow
         html             = Safe_Str__Html("<p>Original text</p>")
         extract_response = self.transformations.html__to__dict__hashes(html)
-        original_hash    = list(extract_response.text_hashes_mapping.keys())[0]
+        original_hash    = list(extract_response.hash_mapping.keys())[0]
 
         assert extract_response.total_text_hashes                  == 1
-        assert extract_response.text_hashes_mapping[original_hash] == "Original text"
+        assert extract_response.hash_mapping[original_hash] == "Original text"
         assert len(original_hash)                                  == 10
 
     def test__integration__multiple_text_nodes_workflow(self):   # Test workflow with multiple nodes
         html             = Safe_Str__Html("<div><p>First</p><span>Second</span><p>Third</p></div>")
         extract_response = self.transformations.html__to__dict__hashes(html)
-        text_values      = list(extract_response.text_hashes_mapping.values())
+        text_values      = list(extract_response.hash_mapping.values())
 
         assert extract_response.total_text_hashes         == 3
-        assert len(extract_response.text_hashes_mapping)  == 3
+        assert len(extract_response.hash_mapping)  == 3
         assert "First"                                    in text_values
         assert "Second"                                   in text_values
         assert "Third"                                    in text_values
@@ -517,7 +517,7 @@ class test_Html__Hash__Transformations(TestCase):
                                                                     __(tag='div',
                                                                        attrs=__(),
                                                                        nodes=[__(type='TEXT', data='13c479c348')])]),
-                                                text_hashes_mapping=__(_3bc7818faf='Unclosed paragraph',
+                                                hash_mapping=__(_3bc7818faf='Unclosed paragraph',
                                                                        _13c479c348='Nested'),
                                                 node_count=4,
                                                 max_depth=2,
@@ -555,7 +555,7 @@ class test_Html__Hash__Transformations(TestCase):
 
 
         assert hasattr(response, 'html_dict'          )
-        assert hasattr(response, 'text_hashes_mapping')
+        assert hasattr(response, 'hash_mapping')
         assert hasattr(response, 'node_count'         )
         assert hasattr(response, 'max_depth'          )
         assert hasattr(response, 'total_text_hashes'  )
@@ -564,7 +564,7 @@ class test_Html__Hash__Transformations(TestCase):
         assert response.obj() == __(html_dict=__(tag='p',
                                                  attrs=__(),
                                                  nodes=[__(type='TEXT', data='0cbc6611f5')]),
-                                   text_hashes_mapping=__(_0cbc6611f5='Test'),
+                                   hash_mapping=__(_0cbc6611f5='Test'),
                                    node_count=2,
                                    max_depth=1,
                                    total_text_hashes=1,
@@ -577,14 +577,14 @@ class test_Html__Hash__Transformations(TestCase):
 
         response = self.transformations.html__to__text__hashes(html)
 
-        assert hasattr(response, 'text_hashes_mapping')
+        assert hasattr(response, 'hash_mapping')
         assert hasattr(response, 'total_text_hashes')
         assert hasattr(response, 'max_depth_reached')
         assert not hasattr(response, 'html_dict')                    # Should NOT have these
         assert not hasattr(response, 'node_count')
 
         assert type(response) == Schema__Html__To__Text__Hashes__Response
-        assert response.obj() == __( text_hashes_mapping = __(_0cbc6611f5='Test'),
+        assert response.obj() == __( hash_mapping = __(_0cbc6611f5='Test'),
                                      total_text_hashes   = 1    ,
                                      max_depth_reached   = False)
 
@@ -594,13 +594,13 @@ class test_Html__Hash__Transformations(TestCase):
         response1 = self.transformations.html__to__dict__hashes(html)
         response2 = self.transformations.html__to__dict__hashes(html)
 
-        assert response1.text_hashes_mapping                 == response2.text_hashes_mapping
+        assert response1.hash_mapping                 == response2.hash_mapping
         assert response1.total_text_hashes                   == response2.total_text_hashes
 
         assert response1.obj() == __( html_dict=__( tag='p',
                                                     attrs=__(),
                                                     nodes=[__(type='TEXT', data='0cbc6611f5')]),
-                                       text_hashes_mapping=__(_0cbc6611f5='Test'),
+                                       hash_mapping=__(_0cbc6611f5='Test'),
                                        node_count=2,
                                        max_depth=1,
                                        total_text_hashes=1,

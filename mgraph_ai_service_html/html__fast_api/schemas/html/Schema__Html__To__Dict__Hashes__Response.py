@@ -6,7 +6,7 @@ from typing                                                                     
 
 class Schema__Html__To__Dict__Hashes__Response(Type_Safe):         # Complete package for hash replacement workflow
     html_dict           : Dict                                      # With text replaced by hashes
-    text_hashes_mapping : Dict[Safe_Str__Hash, str]                 # Simple {hash: text} mapping
+    hash_mapping        : Dict[Safe_Str__Hash, str]                 # Simple {hash: text} mapping
     node_count          : Safe_UInt                                 # Total nodes in tree
     max_depth           : Safe_UInt                                 # Deepest nesting level
     total_text_hashes   : Safe_UInt                                 # Number of text hashes extracted

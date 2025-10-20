@@ -26,22 +26,22 @@ class Html__Hash__Transformations(Type_Safe):
 
             extractor.traverse(html_dict, depth=0, parent_tag=None)
 
-            text_hashes_mapping = extractor.text_elements__raw
+            hash_mapping        = extractor.text_elements__raw
             node_count          = self.count_nodes(html_dict)
             max_depth_val       = self.calculate_max_depth(html_dict)
             max_depth_reached   = self.check_depth_exceeded(html_dict, max_depth)
         else:
-            text_hashes_mapping = {}
+            hash_mapping        = {}
             node_count          = 0
             max_depth_val       = 0
             max_depth_reached   = False
 
-        return Schema__Html__To__Dict__Hashes__Response(html_dict           = html_dict                   ,
-                                                        text_hashes_mapping = text_hashes_mapping         ,
-                                                        node_count          = node_count                  ,
-                                                        max_depth           = max_depth_val               ,
-                                                        total_text_hashes   = len(text_hashes_mapping)    ,
-                                                        max_depth_reached   = max_depth_reached           )
+        return Schema__Html__To__Dict__Hashes__Response(html_dict           = html_dict            ,
+                                                        hash_mapping        = hash_mapping         ,
+                                                        node_count          = node_count           ,
+                                                        max_depth           = max_depth_val        ,
+                                                        total_text_hashes   = len(hash_mapping)    ,
+                                                        max_depth_reached   = max_depth_reached    )
 
     @type_safe
     def html__to__text__hashes(self, html      : Safe_Str__Html     ,                                           # Extract only text hash mapping (lightweight)
@@ -55,15 +55,15 @@ class Html__Hash__Transformations(Type_Safe):
 
             extractor.traverse(html_dict, depth=0, parent_tag=None)
 
-            text_hashes_mapping = extractor.text_elements__raw
+            hash_mapping = extractor.text_elements__raw
             max_depth_reached   = self.check_depth_exceeded(html_dict, max_depth)
         else:
-            text_hashes_mapping = {}
+            hash_mapping = {}
             max_depth_reached   = False
 
-        return Schema__Html__To__Text__Hashes__Response(text_hashes_mapping = text_hashes_mapping      ,
-                                                        total_text_hashes   = len(text_hashes_mapping) ,
-                                                        max_depth_reached   = max_depth_reached        )
+        return Schema__Html__To__Text__Hashes__Response(hash_mapping        = hash_mapping      ,
+                                                        total_text_hashes   = len(hash_mapping) ,
+                                                        max_depth_reached   = max_depth_reached )
     @type_safe
     def html_dict__with__hashes(self, html_dict  : Dict,                                        # Replace text with hashes in html_dict
                                       text_nodes : Dict
