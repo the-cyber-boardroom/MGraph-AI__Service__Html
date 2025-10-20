@@ -8,6 +8,7 @@ from osbot_fast_api_serverless.utils.Version                                impo
 from osbot_utils.utils.Env                                                  import get_env
 from osbot_utils.utils.Files                                                import file_contents
 from starlette.testclient                                                   import TestClient
+from mgraph_ai_service_html.config                                          import UI__CONSOLE__MAJOR__VERSION, UI__CONSOLE__LATEST__VERSION
 from mgraph_ai_service_html.html__fast_api.Html_Service__Fast_API           import Html_Service__Fast_API, ROUTES_PATHS__CONSOLE
 from mgraph_ai_service_html.html__fast_api.routes.Routes__Dict              import ROUTES_PATHS__DICT
 from mgraph_ai_service_html.html__fast_api.routes.Routes__Hashes            import ROUTES_PATHS__HASHES
@@ -79,7 +80,7 @@ class test_Html_Service__Fast_API__client(TestCase):
 
             response_1 = _.get('/console', headers=self.auth_headers(), follow_redirects=False)
             assert response_1.status_code == 307
-            assert response_1.headers['Location'] == '/console/v0/v0.1.0/index.html'
+            assert response_1.headers['Location'] == f'/console/{UI__CONSOLE__MAJOR__VERSION}/{UI__CONSOLE__LATEST__VERSION}/index.html'
 
             response_2 = _.get('/console/index.html', headers=self.auth_headers())
 
@@ -88,4 +89,4 @@ class test_Html_Service__Fast_API__client(TestCase):
 
             response_3 = _.get('/console', headers=self.auth_headers(), follow_redirects=True)
             assert response_3.status_code == 200
-            assert "<title>HTML Service Dashboard - Admin UI</title>" in response_3.text
+            assert "<html lang=\"en\">" in response_3.text

@@ -11,63 +11,63 @@ class TransformationSelector extends HTMLElement {
         // Endpoint definitions
         this.endpoints = {
             'html-to-dict': {
-                route: '/html/to__dict',
+                route: '/html/to/dict',
                 description: 'Parse HTML into a nested dictionary structure representing the DOM tree',
                 method: 'POST',
                 requiresMaxDepth: false,
                 inputType: 'html'
             },
             'html-to-text-nodes': {
-                route: '/html/to__text__nodes',
+                route: '/html/to/text/nodes',
                 description: 'Extract all text nodes with unique hash identifiers for semantic modification',
                 method: 'POST',
                 requiresMaxDepth: true,
                 inputType: 'html'
             },
-            'html-to-lines': {
-                route: '/html/to__lines',
-                description: 'Format HTML as readable indented lines showing structure',
+            'html-to-tree-view': {
+                route: '/html/to/tree/view',
+                description: 'Format HTML as readable indented tree view showing structure',
                 method: 'POST',
                 requiresMaxDepth: false,
                 inputType: 'html'
             },
             'html-to-html-hashes': {
-                route: '/html/to__html__hashes',
+                route: '/html/to/html/hashes',
                 description: 'Replace all text content with hash identifiers (debugging visualization)',
                 method: 'POST',
                 requiresMaxDepth: true,
                 inputType: 'html'
             },
             'html-to-html-xxx': {
-                route: '/html/to__html__xxx',
+                route: '/html/to/html/xxx',
                 description: 'Replace all text content with x\'s (privacy masking visualization)',
                 method: 'POST',
                 requiresMaxDepth: true,
                 inputType: 'html'
             },
             'dict-to-html': {
-                route: '/dict/to__html',
+                route: '/dict/to/html',
                 description: 'Reconstruct HTML from dictionary structure',
                 method: 'POST',
                 requiresMaxDepth: false,
                 inputType: 'dict'
             },
             'dict-to-text-nodes': {
-                route: '/dict/to__text__nodes',
+                route: '/dict/to/text/nodes',
                 description: 'Extract text nodes from dictionary structure',
                 method: 'POST',
                 requiresMaxDepth: true,
                 inputType: 'dict'
             },
-            'dict-to-lines': {
-                route: '/dict/to__lines',
-                description: 'Format dictionary as readable lines',
+            'dict-to-tree-view': {
+                route: '/dict/to/tree/view',
+                description: 'Format dictionary as readable  tree view',
                 method: 'POST',
                 requiresMaxDepth: false,
                 inputType: 'dict'
             },
             'hashes-to-html': {
-                route: '/hashes/to__html',
+                route: '/hashes/to/html',
                 description: 'Apply hash mappings to reconstruct HTML with modified text',
                 method: 'POST',
                 requiresMaxDepth: false,
