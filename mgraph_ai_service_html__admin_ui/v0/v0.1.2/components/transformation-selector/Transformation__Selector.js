@@ -68,6 +68,7 @@ export class Transformation__Selector extends HTMLElement {
     }
 
     attach_event_listeners() {
+        console.log('in attach_event_listeners')
         const selector        = this.querySelector('#endpoint-selector');
         const transform_btn   = this.querySelector('#transform-btn');
         const max_depth_slider = this.querySelector('#max-depth-slider');
@@ -122,6 +123,7 @@ export class Transformation__Selector extends HTMLElement {
     }
 
     handle_transform() {
+        //debugger
         const selector    = this.querySelector('#endpoint-selector');
         const endpoint_id = selector.value;
         const endpoint    = Endpoints__Utils.get_endpoint(endpoint_id);

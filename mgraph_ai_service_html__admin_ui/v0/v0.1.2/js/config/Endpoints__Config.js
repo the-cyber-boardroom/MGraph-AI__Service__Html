@@ -154,7 +154,6 @@ export const Endpoints__Config = {
     }
 };
 
-
 // Utility functions for working with endpoints
 export const Endpoints__Utils = {
     // Get endpoint by ID
