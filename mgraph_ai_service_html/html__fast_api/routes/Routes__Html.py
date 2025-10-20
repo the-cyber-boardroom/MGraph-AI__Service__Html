@@ -31,8 +31,12 @@ class Routes__Html(Fast_API__Routes):                                      # HTM
     def to__dict(self, request: Schema__Html__To__Dict__Request                                     # Parse HTML to dict
                   ) -> Schema__Html__To__Dict__Response:
         html_dict  = self.html_direct_transformations.html__to__html_dict(request.html)
-        node_count = self.html_hash_transformations.count_nodes(html_dict)
-        max_depth  = self.html_hash_transformations.calculate_max_depth(html_dict)
+        if html_dict:
+            node_count = self.html_hash_transformations.count_nodes(html_dict)
+            max_depth  = self.html_hash_transformations.calculate_max_depth(html_dict)
+        else:
+            node_count = 0
+            max_depth  = 0
         
         return Schema__Html__To__Dict__Response(html_dict  = html_dict  ,
                                                 node_count = node_count ,

@@ -19,16 +19,22 @@ class Html__Hash__Transformations(Type_Safe):
                                      max_depth : Safe_UInt = 256
                                 ) -> Schema__Html__To__Dict__Hashes__Response:
         html_dict           = self.html_direct_transformations.html__to__html_dict(html)
-        extractor           = Html__Extract_Text_Nodes()
-        extractor.html_dict = html_dict
-        extractor.max_depth = max_depth
+        if html_dict:
+            extractor           = Html__Extract_Text_Nodes()
+            extractor.html_dict = html_dict
+            extractor.max_depth = max_depth
 
-        extractor.traverse(html_dict, depth=0, parent_tag=None)
+            extractor.traverse(html_dict, depth=0, parent_tag=None)
 
-        text_hashes_mapping = extractor.text_elements__raw
-        node_count          = self.count_nodes(html_dict)
-        max_depth_val       = self.calculate_max_depth(html_dict)
-        max_depth_reached   = self.check_depth_exceeded(html_dict, max_depth)
+            text_hashes_mapping = extractor.text_elements__raw
+            node_count          = self.count_nodes(html_dict)
+            max_depth_val       = self.calculate_max_depth(html_dict)
+            max_depth_reached   = self.check_depth_exceeded(html_dict, max_depth)
+        else:
+            text_hashes_mapping = {}
+            node_count          = 0
+            max_depth_val       = 0
+            max_depth_reached   = False
 
         return Schema__Html__To__Dict__Hashes__Response(html_dict           = html_dict                   ,
                                                         text_hashes_mapping = text_hashes_mapping         ,
@@ -42,26 +48,29 @@ class Html__Hash__Transformations(Type_Safe):
                                      max_depth : Safe_UInt     = 256
                                 ) -> Schema__Html__To__Text__Hashes__Response:
         html_dict = self.html_direct_transformations.html__to__html_dict(html)
+        if html_dict:
+            extractor           = Html__Extract_Text_Nodes()
+            extractor.html_dict = html_dict
+            extractor.max_depth = max_depth
 
-        extractor           = Html__Extract_Text_Nodes()
-        extractor.html_dict = html_dict
-        extractor.max_depth = max_depth
+            extractor.traverse(html_dict, depth=0, parent_tag=None)
 
-        extractor.traverse(html_dict, depth=0, parent_tag=None)
-
-        text_hashes_mapping = extractor.text_elements__raw
-        max_depth_reached   = self.check_depth_exceeded(html_dict, max_depth)
+            text_hashes_mapping = extractor.text_elements__raw
+            max_depth_reached   = self.check_depth_exceeded(html_dict, max_depth)
+        else:
+            text_hashes_mapping = {}
+            max_depth_reached   = False
 
         return Schema__Html__To__Text__Hashes__Response(text_hashes_mapping = text_hashes_mapping      ,
                                                         total_text_hashes   = len(text_hashes_mapping) ,
                                                         max_depth_reached   = max_depth_reached        )
-    #@type_safe  # todo: add back once OSBot_Utils Bug with Dict in @type_safe has been fixed
+    @type_safe
     def html_dict__with__hashes(self, html_dict  : Dict,                                        # Replace text with hashes in html_dict
                                       text_nodes : Dict
                                  ) -> Dict:                                                     # todo review if we need the text_nodes here, since it is not being used in this method
         return html_dict                                                                        #      also review the name of this method, since to get html_dict__with__hashes, other actions will need to happen before (that are not part of this method)
 
-    #@type_safe  # todo: add back once OSBot_Utils Bug with Dict in @type_safe has been fixed
+    @type_safe
     def html_dict__with__xxx(self, html_dict  : Dict,                                           # Replace text with x's in html_dict
                                    text_nodes : Dict
                               ) -> Dict:
@@ -89,7 +98,7 @@ class Html__Hash__Transformations(Type_Safe):
         result = count_recursive(html_dict)
         return Safe_UInt(result)
 
-    #@type_safe         # todo: add back once OSBot_Utils Bug with Dict in @type_safe has been fixed
+    @type_safe
     def calculate_max_depth(self, html_dict: Dict
                              ) -> Safe_UInt:                                                    # Calculate maximum nesting depth
         def depth_recursive(node, current_depth):
@@ -104,7 +113,7 @@ class Html__Hash__Transformations(Type_Safe):
         result = depth_recursive(html_dict, 0)
         return Safe_UInt(result)
 
-    #@type_safe     # todo: add back once OSBot_Utils Bug with Dict in @type_safe has been fixed
+    @type_safe
     def check_depth_exceeded(self, html_dict : Dict     ,    # Check if depth limit was exceeded
                                    max_depth : Safe_UInt
                               ) -> bool:

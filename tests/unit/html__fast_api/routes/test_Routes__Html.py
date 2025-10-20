@@ -35,8 +35,7 @@ class test_Routes__Html(TestCase):
     def test__to__dict__empty_html(self):                        # Test with empty HTML
         html = ""
 
-        response = self.client.post('/html/to/dict',
-                                   json={'html': html})
+        response = self.client.post('/html/to/dict', json={'html': html})
 
         assert response.status_code == 200
         result = response.json()
@@ -350,9 +349,7 @@ class test_Routes__Html(TestCase):
         assert result['total_nodes'] >= 1
 
     def test__error_handling__invalid_json(self):                # Test invalid request
-        response = self.client.post('/html/to/dict',
-                                   json={})                      # Missing 'html' field
-
+        response = self.client.post('/html/to/dict', json={})                      # Missing 'html' field
         assert response.status_code == 200                       # Validation error
         assert response.json() == {"html_dict":{},"node_count":0,"max_depth":0}
 

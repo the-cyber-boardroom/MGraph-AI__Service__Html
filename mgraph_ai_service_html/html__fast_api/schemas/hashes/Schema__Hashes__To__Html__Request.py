@@ -1,5 +1,5 @@
-from osbot_utils.type_safe.Type_Safe                                                        import Type_Safe
-from osbot_utils.type_safe.primitives.domains.cryptography.safe_str.Safe_Str__Hash     import Safe_Str__Hash
+from osbot_utils.type_safe.Type_Safe                                                    import Type_Safe
+from osbot_utils.type_safe.primitives.domains.cryptography.safe_str.Safe_Str__Hash      import Safe_Str__Hash
 from typing                                                                             import Dict
 
 

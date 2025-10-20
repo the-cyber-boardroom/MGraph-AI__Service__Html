@@ -329,14 +329,14 @@ osbot-utils = "*"
 
 [[package]]
 name = "osbot-fast-api"
-version = "0.28.0"
+version = "0.29.0"
 description = "OWASP Security Bot - Fast API"
 optional = false
 python-versions = "<4.0,>=3.11"
 groups = ["main"]
 files = [
-    {file = "osbot_fast_api-0.28.0-py3-none-any.whl", hash = "sha256:e457279ad3519d9903dbd53e8fafef8ba501590dba90488b9d18b0809d2790d2"},
-    {file = "osbot_fast_api-0.28.0.tar.gz", hash = "sha256:53cd30a2aec0c266e7787f579a8bee6bd02d1b59be0e6f2c2a9df1bb81dccbcd"},
+    {file = "osbot_fast_api-0.29.0-py3-none-any.whl", hash = "sha256:d56cace24ed271f48494cbf11f54c7ffe3a90e4ecbeefdf83e1b6772d307916e"},
+    {file = "osbot_fast_api-0.29.0.tar.gz", hash = "sha256:6dfb4b88329fb702c3fae49b61af69d7f21ad5908ba43a5e87b6194e1dd9d108"},
 ]
 
 [package.dependencies]
@@ -364,14 +364,14 @@ osbot-fast-api = "*"
 
 [[package]]
 name = "osbot-utils"
-version = "3.20.0"
+version = "3.21.0"
 description = "OWASP Security Bot - Utils"
 optional = false
 python-versions = "<4.0,>=3.7"
 groups = ["main"]
 files = [
-    {file = "osbot_utils-3.20.0-py3-none-any.whl", hash = "sha256:c4f2acb4d67acfc42d2dfe31f3cd2ef99c84641c83dc697c41a075cb44b3ae62"},
-    {file = "osbot_utils-3.20.0.tar.gz", hash = "sha256:4dc5108aeb1069d1e02fd7069661fce33c6fbc0eef226d6f5fa7c4314a719018"},
+    {file = "osbot_utils-3.21.0-py3-none-any.whl", hash = "sha256:1f8112e83cfa1d870fc7c42acf07b3c809eb13fd656905dfeefb15fcb972b5cd"},
+    {file = "osbot_utils-3.21.0.tar.gz", hash = "sha256:98611a95a5d23a6c0cf9249a06946598d95ad719593fe39fcd0d00db792b360a"},
 ]
 
 [[package]]

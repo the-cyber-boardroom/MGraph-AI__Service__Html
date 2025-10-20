@@ -1,13 +1,10 @@
-import re
 import pytest
-from typing                                                                                         import Dict
 from unittest                                                                                       import TestCase
 from osbot_utils.testing.__helpers                                                                  import obj
 from osbot_utils.type_safe.primitives.core.Safe_UInt                                                import Safe_UInt
 from osbot_utils.type_safe.primitives.domains.web.safe_str.Safe_Str__Html                           import Safe_Str__Html
 from osbot_utils.testing.__                                                                         import __
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict                               import Type_Safe__Dict
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe                                      import type_safe
 from mgraph_ai_service_html.html__fast_api.core.Html__Hash__Transformations                         import Html__Hash__Transformations
 from mgraph_ai_service_html.html__fast_api.core.Html__Direct__Transformations                       import Html__Direct__Transformations
 from mgraph_ai_service_html.html__fast_api.schemas.html.Schema__Html__To__Dict__Hashes__Response    import Schema__Html__To__Dict__Hashes__Response
@@ -610,38 +607,3 @@ class test_Html__Hash__Transformations(TestCase):
                                        max_depth_reached=False)
 
         assert response1.obj() == response2.obj()
-
-    def test__bug__type_safe__method__failed_with_dict(self):
-        @type_safe
-        def an_method_1(html_dict: Dict): pass
-
-        @type_safe
-        def an_method_2(self, html_dict: Dict): pass
-
-        @type_safe
-        def an_method_3(html_dict: dict): pass
-
-        @type_safe
-        def an_method_4(self, html_dict: dict): pass
-
-        an_dict_1     = {}
-        an_dict_2     = dict()
-
-        # BUG: with Dict fails
-        error_message = "not enough values to unpack (expected 2, got 0)"
-        with pytest.raises(ValueError, match=re.escape(error_message)):
-            an_method_1({})                                                     # BUG
-
-        with pytest.raises(ValueError, match=re.escape(error_message)):
-            an_method_2(None, {})                                 # BUG
-
-        with pytest.raises(ValueError, match=re.escape(error_message)):
-            an_method_2(None, an_dict_1)                                   # BUG
-
-        # with dict it works
-        an_method_3({})                                  # works with an_method_3(html_dict: dict)
-        an_method_3(an_dict_1)                           # works with an_method_3(html_dict: dict)
-        an_method_3(an_dict_2)                           # works with an_method_3(html_dict: dict)
-        an_method_4(None, {})              # works with an_method_4(self, html_dict: dict)
-        an_method_4(None, an_dict_1)                # works with an_method_4(self, html_dict: dict)
-        an_method_4(None, an_dict_2)                # works with an_method_4(self, html_dict: dict)
