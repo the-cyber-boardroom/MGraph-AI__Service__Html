@@ -5,8 +5,8 @@
 class TopNav extends HTMLElement {
     constructor() {
         super();
-        this.templateURL = './components/top-nav/top-nav.html';
-        this.styleURL = './components/top-nav/top-nav.css';
+        this.templateURL = '../v0.1.1/components/top-nav/top-nav.html';
+        this.styleURL    = '../v0.1.1/components/top-nav/top-nav.css';
     }
 
     async connectedCallback() {

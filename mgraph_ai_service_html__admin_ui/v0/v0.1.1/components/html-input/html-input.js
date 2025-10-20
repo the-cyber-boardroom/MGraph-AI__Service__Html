@@ -5,8 +5,8 @@
 class HtmlInput extends HTMLElement {
     constructor() {
         super();
-        this.templateURL = './components/html-input/html-input.html';
-        this.styleURL = './components/html-input/html-input.css';
+        this.templateURL = '../v0.1.1/components/html-input/html-input.html';
+        this.styleURL    = '../v0.1.1/components/html-input/html-input.css';
         this.state = {
             html: '',
             currentSample: ''
@@ -74,7 +74,7 @@ class HtmlInput extends HTMLElement {
 
     async loadSample(sampleName) {
         try {
-            const response = await fetch(`./samples/${sampleName}.html`);
+            const response = await fetch(`../v0.1.1/samples/${sampleName}.html`);
             const html = await response.text();
             const textarea = this.querySelector('#html-textarea');
             textarea.value = html;

@@ -5,8 +5,8 @@
 class OutputViewer extends HTMLElement {
     constructor() {
         super();
-        this.templateURL = './components/output-viewer/output-viewer.html';
-        this.styleURL = './components/output-viewer/output-viewer.css';
+        this.templateURL = '../v0.1.1/components/output-viewer/output-viewer.html';
+        this.styleURL    = '../v0.1.1/components/output-viewer/output-viewer.css';
         this.state = {
             data: null,
             type: null

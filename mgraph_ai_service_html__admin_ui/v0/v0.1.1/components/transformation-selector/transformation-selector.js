@@ -5,8 +5,8 @@
 class TransformationSelector extends HTMLElement {
     constructor() {
         super();
-        this.templateURL = './components/transformation-selector/transformation-selector.html';
-        this.styleURL = './components/transformation-selector/transformation-selector.css';
+        this.templateURL = '../v0.1.1/components/transformation-selector/transformation-selector.html';
+        this.styleURL    = '../v0.1.1/components/transformation-selector/transformation-selector.css';
         
         // Endpoint definitions
         this.endpoints = {
@@ -125,9 +125,9 @@ class TransformationSelector extends HTMLElement {
     }
 
     showEndpointInfo(endpointId) {
-        const endpoint = this.endpoints[endpointId];
-        const infoDiv = this.querySelector('#endpoint-info');
-        const descSpan = this.querySelector('#endpoint-description');
+        const endpoint    = this.endpoints[endpointId];
+        const infoDiv     = this.querySelector('#endpoint-info');
+        const descSpan    = this.querySelector('#endpoint-description');
         const configPanel = this.querySelector('#config-panel');
 
         descSpan.textContent = endpoint.description;
