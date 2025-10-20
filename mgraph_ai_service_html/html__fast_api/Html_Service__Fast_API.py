@@ -5,7 +5,7 @@ from starlette.staticfiles                                          import Stati
 from osbot_fast_api.api.routes.Routes__Set_Cookie                   import Routes__Set_Cookie
 from osbot_fast_api_serverless.fast_api.Serverless__Fast_API        import Serverless__Fast_API
 from osbot_fast_api_serverless.fast_api.routes.Routes__Info         import Routes__Info
-from mgraph_ai_service_html.config                                  import FAST_API__TITLE, FAST_API__DESCRIPTION
+from mgraph_ai_service_html.config                                  import FAST_API__TITLE, FAST_API__DESCRIPTION, UI__CONSOLE__MAJOR__VERSION, UI__CONSOLE__LATEST__VERSION
 from mgraph_ai_service_html.html__fast_api.routes.Routes__Dict      import Routes__Dict
 from mgraph_ai_service_html.html__fast_api.routes.Routes__Hashes    import Routes__Hashes
 from mgraph_ai_service_html.html__fast_api.routes.Routes__Html      import Routes__Html
@@ -14,9 +14,6 @@ from mgraph_ai_service_html.utils.Version                           import versi
 HTML_SERVICE__ROUTE__CONSOLE = 'console'
 ROUTES_PATHS__CONSOLE        = [f'/{HTML_SERVICE__ROUTE__CONSOLE}']
 class Html_Service__Fast_API(Serverless__Fast_API):                     # Main FastAPI application
-
-    console__major_version  = "v0"
-    console__latest_version = "v0.1.0"
 
     def setup(self):
         with self.config as _:
@@ -30,7 +27,7 @@ class Html_Service__Fast_API(Serverless__Fast_API):                     # Main F
         path_static_folder  = mgraph_ai_service_html__admin_ui.path
         path_static         = f"/{HTML_SERVICE__ROUTE__CONSOLE}"
         path_name           = HTML_SERVICE__ROUTE__CONSOLE
-        path_latest_version = f"/{HTML_SERVICE__ROUTE__CONSOLE}/{self.console__major_version}/{self.console__latest_version}/index.html"
+        path_latest_version = f"/{HTML_SERVICE__ROUTE__CONSOLE}/{UI__CONSOLE__MAJOR__VERSION}/{UI__CONSOLE__LATEST__VERSION}/index.html"
         self.app().mount(path_static, StaticFiles(directory=path_static_folder), name=path_name)
 
         @route_path(path=f'/{HTML_SERVICE__ROUTE__CONSOLE}')
