@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformation Playground - HTML Service</title>
+
+    <!-- v0.1.1 Common Styles (reuse) -->
+    <link rel="stylesheet" href="../v0.1.1/css/common.css">
+
+    <!-- v0.1.5 NEW 3-Column Layout -->
+    <link rel="stylesheet" href="./css/playground.css">
+
+    <!-- v0.1.4 Syntax Highlighting (reuse) -->
+    <link rel="stylesheet" href="../v0.1.4/css/syntax-highlighting.css">
+</head>
+<body>
+    <!-- Top Navigation (from v0.1.1) -->
+    <top-nav current-page="playground"></top-nav>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="page-header">
+            <h1>🎮 Transformation Playground</h1>
+            <p class="subtitle">Interactive testing of HTML transformation endpoints</p>
+        </header>
+
+        <!-- NEW: 3-Column Grid Layout -->
+        <div class="playground-grid">
+
+            <!-- Column 1: Original HTML -->
+            <div class="column" id="column-original">
+                <div class="column-header">
+                    <h2>📝 Original HTML</h2>
+                    <div class="column-actions">
+                        <button class="btn-small btn-danger" id="btn-clear-input">Clear</button>
+                    </div>
+                </div>
+
+                <div class="column-content">
+                    <div class="input-area">
+                        <div class="input-controls">
+                            <select id="sample-selector">
+                                <option value="">-- Select a Sample --</option>
+                                <option value="micro">Micro HTML (Minimal)</option>
+                                <option value="simple">Simple HTML</option>
+                                <option value="complex">Complex HTML (Deep Nesting)</option>
+                                <option value="custom">Custom (Paste Your Own)</option>
+                            </select>
+                        </div>
+
+                        <textarea
+                            id="html-input"
+                            class="input-textarea"
+                            placeholder="Paste your HTML here or select a sample above..."
+                            spellcheck="false"
+                        ></textarea>
+
+                        <div class="character-count">
+                            <span id="char-count">0</span> characters
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Layout & Content Objects (DUAL VIEW) -->
+            <div class="column middle-column" id="column-middle">
+                <div class="column-header">
+                    <h2>🧩 Layout & Content Objects</h2>
+                    <div class="column-actions">
+                        <button class="btn-small btn-primary" id="btn-transform-parse">
+                            ▶ Parse
+                        </button>
+                    </div>
+                </div>
+
+                <div class="column-content">
+                    <!-- View 1: HTML Dict (Structure/Layout) -->
+                    <div class="middle-view">
+                        <div class="middle-view-header">
+                            📐 HTML Dict (Structure/Layout)
+                        </div>
+                        <div class="middle-view-content" id="dict-output">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📐</div>
+                                <div class="empty-state-text">HTML structure will appear here after parsing</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- View 2: Text Nodes/Hashes (Content) -->
+                    <div class="middle-view">
+                        <div class="middle-view-header">
+                            🔤 Text Nodes + Hashes (Content)
+                        </div>
+                        <div class="middle-view-content" id="hashes-output">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔤</div>
+                                <div class="empty-state-text">Text nodes will appear here after parsing</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Created HTML -->
+            <div class="column" id="column-created">
+                <div class="column-header">
+                    <h2>✨ Created HTML</h2>
+                    <div class="column-actions">
+                        <button class="btn-small btn-primary" id="btn-transform-rebuild">
+                            ▶ Rebuild
+                        </button>
+                        <button class="btn-small btn-secondary" id="btn-copy-output">Copy</button>
+                        <button class="btn-small btn-secondary" id="btn-download-output">Download</button>
+                    </div>
+                </div>
+
+                <div class="column-content">
+                    <div class="output-area">
+                        <div id="status-message" style="display: none;"></div>
+
+                        <div class="output-content" id="created-html-output">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✨</div>
+                                <div class="empty-state-text">Rebuilt HTML will appear here after reconstruction</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>HTML Service Admin UI v0.1.5 (IFD Compliant - 3-Column Layout)</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Navigation component (from v0.1.1) -->
+    <script src="../v0.1.1/components/top-nav/top-nav.js"></script>
+
+    <!-- v0.1.5 NEW Playground Logic -->
+    <script type="module" src="./js/playground.js"></script>
+</body>
+</html>
