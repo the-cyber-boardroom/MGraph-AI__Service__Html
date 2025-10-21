@@ -207,9 +207,14 @@ class PlaygroundController extends HTMLElement {
             console.log('Dict result:', dictResult);
             console.log('Hashes result:', hashesResult);
 
-            // Store results
-            this.currentDict = dictResult;
-            this.currentHashes = hashesResult;
+            // Extract just the data we need from the responses
+            // dict result has: { html_dict: {...}, node_count, max_depth }
+            // hashes result has: { text_nodes: {...}, total_nodes, max_depth_reached }
+            this.currentDict = dictResult.html_dict || dictResult;
+            this.currentHashes = hashesResult.text_nodes || hashesResult;
+
+            console.log('Extracted dict:', this.currentDict);
+            console.log('Extracted hashes:', this.currentHashes);
 
             // Display results with syntax highlighting
             this.dictOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(dictResult, 'json')}</pre>`;
