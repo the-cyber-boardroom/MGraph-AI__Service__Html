@@ -1,6 +1,8 @@
 /**
  * Playground Logic - v0.1.5
  * 3-Column Architecture: Original HTML | Layout & Content Objects | Created HTML
+ *
+ * IFD COMPLIANT: Web Component architecture
  */
 
 // Import samples
@@ -13,11 +15,51 @@ import { Endpoints__Config } from '../../v0.1.3/js/config/Endpoints__Config.js';
 import { Syntax__Highlighter } from '../../v0.1.4/js/utils/Syntax__Highlighter.js';
 
 /**
- * Playground Controller
+ * Playground Controller Component
+ * Web Component that manages the entire playground
  */
-class PlaygroundController {
+class PlaygroundController extends HTMLElement {
     constructor() {
-        // DOM Elements
+        super();
+        console.log('🎮 PlaygroundController constructor called');
+
+        // State
+        this.currentDict = null;
+        this.currentHashes = null;
+        this.currentCreatedHtml = null;
+
+        // Load syntax highlighter styles
+        Syntax__Highlighter.loadStyles();
+    }
+
+    connectedCallback() {
+        console.log('🎮 PlaygroundController connectedCallback - component mounted!');
+
+        // Get DOM references
+        this.getDOMReferences();
+
+        // Attach event listeners
+        this.attachEventListeners();
+
+        console.log('✅ Event listeners attached');
+
+        // Auto-run full flow on load
+        // console.log('🚀 Running auto-flow: Load Micro → Parse → Rebuild');
+        // setTimeout(() => {
+        //     this.runFullFlow();
+        // }, 500);
+    }
+
+    disconnectedCallback() {
+        console.log('🎮 PlaygroundController disconnected');
+        // Cleanup if needed
+    }
+
+    /**
+     * Get all DOM element references
+     */
+    getDOMReferences() {
+        // Input elements
         this.htmlInput = document.getElementById('html-input');
         this.sampleSelector = document.getElementById('sample-selector');
         this.charCount = document.getElementById('char-count');
@@ -44,44 +86,30 @@ class PlaygroundController {
         this.debugRebuild = document.getElementById('debug-rebuild');
         this.debugFullFlow = document.getElementById('debug-full-flow');
 
-        // State
-        this.currentDict = null;
-        this.currentHashes = null;
-        this.currentCreatedHtml = null;
-
-        // Load syntax highlighter styles
-        Syntax__Highlighter.loadStyles();
-
-        // Initialize
-        this.init();
+        console.log('✅ DOM references obtained');
     }
 
-    init() {
-        console.log('🎮 Playground v0.1.5 initializing...');
+    /**
+     * Attach all event listeners
+     */
+    attachEventListeners() {
+        // Input events
+        this.htmlInput?.addEventListener('input', () => this.updateCharCount());
+        this.sampleSelector?.addEventListener('change', (e) => this.loadSample(e.target.value));
 
-        // Event Listeners
-        this.htmlInput.addEventListener('input', () => this.updateCharCount());
-        this.sampleSelector.addEventListener('change', (e) => this.loadSample(e.target.value));
-        this.btnClearInput.addEventListener('click', () => this.clearInput());
-        this.btnTransformParse.addEventListener('click', () => this.parseHtml());
-        this.btnTransformRebuild.addEventListener('click', () => this.rebuildHtml());
-        this.btnCopyOutput.addEventListener('click', () => this.copyOutput());
-        this.btnDownloadOutput.addEventListener('click', () => this.downloadOutput());
+        // Button events
+        this.btnClearInput?.addEventListener('click', () => this.clearInput());
+        this.btnTransformParse?.addEventListener('click', () => this.parseHtml());
+        this.btnTransformRebuild?.addEventListener('click', () => this.rebuildHtml());
+        this.btnCopyOutput?.addEventListener('click', () => this.copyOutput());
+        this.btnDownloadOutput?.addEventListener('click', () => this.downloadOutput());
 
         // Debug button listeners
-        this.debugLoadMicro.addEventListener('click', () => this.loadSample('micro'));
-        this.debugLoadSimple.addEventListener('click', () => this.loadSample('simple'));
-        this.debugParse.addEventListener('click', () => this.parseHtml());
-        this.debugRebuild.addEventListener('click', () => this.rebuildHtml());
-        this.debugFullFlow.addEventListener('click', () => this.runFullFlow());
-
-        console.log('✅ Event listeners attached');
-
-        // Auto-run full flow on load
-        console.log('🚀 Running auto-flow: Load Micro → Parse → Rebuild');
-        setTimeout(() => {
-            this.runFullFlow();
-        }, 500);
+        this.debugLoadMicro?.addEventListener('click', () => this.loadSample('micro'));
+        this.debugLoadSimple?.addEventListener('click', () => this.loadSample('simple'));
+        this.debugParse?.addEventListener('click', () => this.parseHtml());
+        this.debugRebuild?.addEventListener('click', () => this.rebuildHtml());
+        this.debugFullFlow?.addEventListener('click', () => this.runFullFlow());
     }
 
     /**
@@ -347,7 +375,7 @@ class PlaygroundController {
     }
 }
 
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', () => {
-    new PlaygroundController();
-});
+// Register the Web Component
+customElements.define('playground-controller', PlaygroundController);
+
+console.log('✅ PlaygroundController component registered');

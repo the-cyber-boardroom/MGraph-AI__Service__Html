@@ -11,14 +11,15 @@
     <!-- v0.1.5 NEW 3-Column Layout -->
     <link rel="stylesheet" href="./css/playground.css">
 
-    <!-- v0.1.4 Syntax Highlighting (reuse) -->
-    <link rel="stylesheet" href="../v0.1.4/css/syntax-highlighting.css">
 </head>
 <body>
     <!-- Top Navigation (from v0.1.1) -->
     <top-nav current-page="playground"></top-nav>
 
     <div class="container">
+        <!-- Playground Controller Component -->
+        <playground-controller></playground-controller>
+
         <!-- Header -->
         <header class="page-header">
             <span class="version-badge">v0.1.5</span>
@@ -157,7 +158,11 @@
     <!-- Navigation component (from v0.1.1) -->
     <script src="../v0.1.1/components/top-nav/top-nav.js"></script>
 
-    <!-- v0.1.5 NEW Playground Logic -->
+    <!--
+        v0.1.5 Playground Controller (IFD COMPLIANT)
+        Web Component architecture - registers <playground-controller> element
+        Component auto-initializes when mounted to DOM
+    -->
     <script type="module" src="./js/playground.js"></script>
 </body>
 </html>
