@@ -21,6 +21,7 @@
     <div class="container">
         <!-- Header -->
         <header class="page-header">
+            <span class="version-badge">v0.1.5</span>
             <h1>🎮 Transformation Playground</h1>
             <p class="subtitle">Interactive testing of HTML transformation endpoints</p>
         </header>
@@ -136,6 +137,20 @@
         <footer class="footer">
             <p>HTML Service Admin UI v0.1.5 (IFD Compliant - 3-Column Layout)</p>
         </footer>
+    </div>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel">
+        <div class="debug-panel-header">
+            🔧 Debug Controls
+        </div>
+        <div class="debug-panel-buttons">
+            <button class="btn-small btn-secondary" id="debug-load-micro">📝 Load Micro Sample</button>
+            <button class="btn-small btn-secondary" id="debug-load-simple">📄 Load Simple Sample</button>
+            <button class="btn-small btn-secondary" id="debug-parse">▶️ Parse HTML</button>
+            <button class="btn-small btn-secondary" id="debug-rebuild">🔄 Rebuild HTML</button>
+            <button class="btn-small btn-danger" id="debug-full-flow">⚡ Full Flow (Load→Parse→Rebuild)</button>
+        </div>
     </div>
 
     <!-- Scripts -->
