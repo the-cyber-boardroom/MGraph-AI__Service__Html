@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformation Playground - HTML Service</title>
+
+    <!-- v0.1.1 Common Styles (reuse) -->
+    <link rel="stylesheet" href="../v0.1.1/css/common.css">
+
+    
+
+    <!-- v0.1.6 NEW 3-Column Layout with Edit/View Modes -->
+    <link rel="stylesheet" href="../v0.1.6/css/playground.css">
+
+</head>
+<body>
+    <!-- Top Navigation (from v0.1.1) -->
+    <top-nav current-page="playground"></top-nav>
+
+    <div class="container">
+        <!-- Playground Controller Component -->
+        <playground-controller></playground-controller>
+
+        <!-- Header with Status Messages (NEW in v0.1.6) -->
+        <header class="page-header">
+            <div class="header-left">
+                <span class="version-badge">v0.1.6</span>
+                <h1>🎮 Transformation Playground</h1>
+            </div>
+
+            <!-- NEW: Status messages appear here (right side) -->
+            <div class="header-right">
+                <div id="status-message" class="status-message" style="display: none;">
+                    <!-- Status messages will appear here -->
+                </div>
+            </div>
+        </header>
+
+        <p class="subtitle">Interactive testing of HTML transformation endpoints</p>
+
+        <!-- NEW: 3-Column Grid Layout with Edit/View Mode Support -->
+        <div class="playground-grid">
+
+            <!-- Column 1: Original HTML (Edit/View modes) -->
+            <div class="column" id="column-original" data-mode="edit">
+                <div class="column-header">
+                    <h2>📝 Original HTML</h2>
+
+                    <!-- NEW: Mode Tabs -->
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" data-mode="edit" data-column="original">
+                            ✏️ Edit
+                        </button>
+                        <button class="mode-tab" data-mode="view" data-column="original">
+                            👁️ View
+                        </button>
+                    </div>
+
+                    <div class="column-actions">
+                        <button class="btn-small btn-danger" id="btn-clear-input">Clear</button>
+                    </div>
+                </div>
+
+                <div class="column-content">
+                    <!-- EDIT MODE (default) -->
+                    <div class="column-mode column-mode-edit">
+                        <div class="input-area">
+                            <div class="input-controls">
+                                <select id="sample-selector">
+                                    <option value="">-- Select a Sample --</option>
+                                    <option value="micro">Micro HTML (Minimal)</option>
+                                    <option value="simple">Simple HTML</option>
+                                    <option value="complex">Complex HTML (Deep Nesting)</option>
+                                    <option value="custom">Custom (Paste Your Own)</option>
+                                </select>
+                            </div>
+
+                            <textarea
+                                id="html-input"
+                                class="input-textarea"
+                                placeholder="Paste your HTML here or select a sample above..."
+                                spellcheck="false"
+                            ></textarea>
+
+                            <div class="character-count">
+                                <span id="char-count">0</span> characters
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIEW MODE (NEW) -->
+                    <div class="column-mode column-mode-view" style="display: none;">
+                        <div class="view-area">
+                            <div class="syntax-highlighted" id="html-view">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">👁️</div>
+                                    <div class="empty-state-text">Syntax-highlighted HTML will appear here</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Layout & Content Objects (View/Edit modes) -->
+            <div class="column middle-column" id="column-middle" data-mode="view">
+                <div class="column-header">
+                    <h2>🧩 Layout & Content Objects</h2>
+
+                    <!-- NEW: Mode Tabs -->
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" data-mode="view" data-column="middle">
+                            👁️ View
+                        </button>
+                        <button class="mode-tab" data-mode="edit" data-column="middle">
+                            ✏️ Edit
+                        </button>
+                    </div>
+
+                    <div class="column-actions">
+                        <button class="btn-small btn-primary" id="btn-transform-parse">
+                            ▶ Parse
+                        </button>
+                    </div>
+                </div>
+
+                <div class="column-content">
+                    <!-- VIEW MODE (default - formatted display) -->
+                    <div class="column-mode column-mode-view">
+                        <!-- View 1: HTML Dict (Structure/Layout) -->
+                        <div class="middle-view">
+                            <div class="middle-view-header">
+                                📐 HTML Dict (Structure/Layout)
+                            </div>
+                            <div class="middle-view-content" id="dict-output">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">📐</div>
+                                    <div class="empty-state-text">HTML structure will appear here after parsing</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View 2: Text Nodes/Hashes (Content) -->
+                        <div class="middle-view">
+                            <div class="middle-view-header">
+                                🔤 Text Nodes + Hashes (Content)
+                            </div>
+                            <div class="middle-view-content" id="hashes-output">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">🔤</div>
+                                    <div class="empty-state-text">Text nodes will appear here after parsing</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EDIT MODE (NEW - raw JSON editing) -->
+                    <div class="column-mode column-mode-edit" style="display: none;">
+                        <div class="edit-area">
+                            <div class="edit-section">
+                                <div class="edit-section-header">
+                                    📐 HTML Dict JSON (Raw)
+                                </div>
+                                <textarea
+                                    id="dict-edit"
+                                    class="edit-textarea"
+                                    placeholder='{"tag": "html", "attrs": {...}, "nodes": [...]}'
+                                    spellcheck="false"
+                                ></textarea>
+                            </div>
+
+                            <div class="edit-section">
+                                <div class="edit-section-header">
+                                    🔤 Text Hashes JSON (Raw)
+                                </div>
+                                <textarea
+                                    id="hashes-edit"
+                                    class="edit-textarea"
+                                    placeholder='{"hash1": "text content", "hash2": "more text"}'
+                                    spellcheck="false"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Created HTML (View mode only for now) -->
+            <div class="column" id="column-created" data-mode="view">
+                <div class="column-header">
+                    <h2>✨ Created HTML</h2>
+
+                    <!-- NEW: Mode Tabs (only View for now, Preview in v0.1.7) -->
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" data-mode="view" data-column="created">
+                            👁️ View
+                        </button>
+                    </div>
+
+                    <div class="column-actions">
+                        <button class="btn-small btn-primary" id="btn-transform-rebuild">
+                            ▶ Rebuild
+                        </button>
+                        <button class="btn-small btn-secondary" id="btn-copy-output">Copy</button>
+                        <button class="btn-small btn-secondary" id="btn-download-output">Download</button>
+                    </div>
+                </div>
+
+                <div class="column-content">
+                    <!-- VIEW MODE (only mode for now) -->
+                    <div class="column-mode column-mode-view">
+                        <div class="output-area">
+                            <div class="output-content" id="created-html-output">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">✨</div>
+                                    <div class="empty-state-text">Rebuilt HTML will appear here after reconstruction</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>HTML Service Admin UI v0.1.6 (Edit/View Modes + Status Relocation)</p>
+        </footer>
+    </div>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel">
+        <div class="debug-panel-header">
+            🔧 Debug Controls
+        </div>
+        <div class="debug-panel-buttons">
+            <button class="btn-small btn-secondary" id="debug-load-micro">📝 Load Micro Sample</button>
+            <button class="btn-small btn-secondary" id="debug-load-simple">📄 Load Simple Sample</button>
+            <button class="btn-small btn-secondary" id="debug-parse">▶️ Parse HTML</button>
+            <button class="btn-small btn-secondary" id="debug-rebuild">🔄 Rebuild HTML</button>
+            <button class="btn-small btn-danger" id="debug-full-flow">⚡ Full Flow (Load→Parse→Rebuild)</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Navigation component (from v0.1.1) -->
+    <script src="../v0.1.1/components/top-nav/top-nav.js"></script>
+
+    <!--
+        v0.1.6 Playground Controller (IFD COMPLIANT)
+        NEW: Manages Edit/View mode state and status messages
+        Web Component architecture - registers <playground-controller> element
+        Component auto-initializes when mounted to DOM
+    -->
+    <script type="module" src="../v0.1.6/components/playground-controller/playground-controller.js"></script>
+</body>
+</html>
