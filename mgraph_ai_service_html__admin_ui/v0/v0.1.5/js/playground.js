@@ -179,6 +179,7 @@ class PlaygroundController extends HTMLElement {
 
     /**
      * Parse HTML → Dict + Hashes
+     * Using the combined endpoint that returns both in the correct format
      */
     async parseHtml() {
         const html = this.htmlInput.value.trim();
@@ -195,30 +196,49 @@ class PlaygroundController extends HTMLElement {
         console.log(`📤 Sending ${html.length} characters to API...`);
 
         try {
-            // Call both endpoints in parallel
-            // Using v0.1.3 endpoint IDs: 'html-to-dict' and 'html-to-text-nodes'
-            console.log('🌐 Calling API endpoints...');
-            const [dictResult, hashesResult] = await Promise.all([
-                this.callEndpoint('html-to-dict', html),
-                this.callEndpoint('html-to-text-nodes', html)
-            ]);
+            // Use the combined endpoint that returns dict with hashes + hash_mapping
+            // This endpoint is not in v0.1.3 config but exists on the server
+            console.log('🌐 Calling combined dict/hashes endpoint...');
 
-            console.log('📥 API responses received');
-            console.log('Dict result:', dictResult);
-            console.log('Hashes result:', hashesResult);
+            const url = '/html/to/dict/hashes';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    html: html,
+                    max_depth: 256
+                })
+            });
 
-            // Extract just the data we need from the responses
-            // dict result has: { html_dict: {...}, node_count, max_depth }
-            // hashes result has: { text_nodes: {...}, total_nodes, max_depth_reached }
-            this.currentDict = dictResult.html_dict || dictResult;
-            this.currentHashes = hashesResult.text_nodes || hashesResult;
+            console.log(`   Response status: ${response.status}`);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`   Error: ${errorText}`);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+
+            const result = await response.json();
+            console.log('📥 API response received:', result);
+
+            // Extract the data
+            // Response structure:
+            // {
+            //   html_dict: { tag, attrs, nodes: [{ type: "TEXT", data: "hash_id" }] },
+            //   hash_mapping: { "hash_id": "actual text" },
+            //   node_count, max_depth, total_text_hashes, max_depth_reached
+            // }
+            this.currentDict = result.html_dict;
+            this.currentHashes = result.hash_mapping;
 
             console.log('Extracted dict:', this.currentDict);
-            console.log('Extracted hashes:', this.currentHashes);
+            console.log('Extracted hash_mapping:', this.currentHashes);
 
             // Display results with syntax highlighting
-            this.dictOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(dictResult, 'json')}</pre>`;
-            this.hashesOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(hashesResult, 'json')}</pre>`;
+            this.dictOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(result.html_dict, 'json')}</pre>`;
+            this.hashesOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(result.hash_mapping, 'json')}</pre>`;
 
             this.showStatus('success', 'HTML parsed successfully!');
             console.log('✅ Parse complete!');
