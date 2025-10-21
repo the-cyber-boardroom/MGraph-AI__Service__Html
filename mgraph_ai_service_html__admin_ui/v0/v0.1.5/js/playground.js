@@ -44,10 +44,10 @@ class PlaygroundController extends HTMLElement {
         console.log('✅ Event listeners attached');
 
         // Auto-run full flow on load
-        // console.log('🚀 Running auto-flow: Load Micro → Parse → Rebuild');
-        // setTimeout(() => {
-        //     this.runFullFlow();
-        // }, 500);
+        console.log('🚀 Running auto-flow: Load Micro → Parse → Rebuild');
+        setTimeout(() => {
+            this.runFullFlow();
+        }, 500);
     }
 
     disconnectedCallback() {
@@ -196,10 +196,11 @@ class PlaygroundController extends HTMLElement {
 
         try {
             // Call both endpoints in parallel
+            // Using v0.1.3 endpoint IDs: 'html-to-dict' and 'html-to-text-nodes'
             console.log('🌐 Calling API endpoints...');
             const [dictResult, hashesResult] = await Promise.all([
-                this.callEndpoint('html_to_dict', html),
-                this.callEndpoint('html_to_text_nodes', html)
+                this.callEndpoint('html-to-dict', html),
+                this.callEndpoint('html-to-text-nodes', html)
             ]);
 
             console.log('📥 API responses received');
@@ -240,17 +241,19 @@ class PlaygroundController extends HTMLElement {
 
         try {
             // Call the reconstruction endpoint
+            // Using v0.1.3 endpoint ID: 'hashes-to-html'
             const payload = {
                 html_dict: this.currentDict,
-                text_nodes: this.currentHashes
+                hash_mapping: this.currentHashes
             };
 
             console.log('🌐 Calling reconstruction endpoint...');
-            const result = await this.callEndpoint('dict_and_nodes_to_html', payload);
+            console.log('   Payload:', payload);
+            const result = await this.callEndpoint('hashes-to-html', payload);
 
             console.log('📥 Rebuild response received:', result);
 
-            // Store result
+            // Store result - v0.1.3 endpoints return the data directly
             this.currentCreatedHtml = result.html || result;
 
             // Display result with syntax highlighting
@@ -326,19 +329,25 @@ class PlaygroundController extends HTMLElement {
      */
     async callEndpoint(endpointKey, payload) {
         console.log(`🌐 API Call: ${endpointKey}`);
+        console.log(`   Config object:`, Endpoints__Config);
 
-        const endpoint = Endpoints__Config.endpoints[endpointKey];
+        // v0.1.3 Endpoints__Config is the direct object, not nested
+        const endpoint = Endpoints__Config[endpointKey];
 
         if (!endpoint) {
             console.error(`❌ Endpoint not found: ${endpointKey}`);
+            console.error(`   Available endpoints:`, Object.keys(Endpoints__Config));
             throw new Error(`Endpoint "${endpointKey}" not found`);
         }
 
-        const url = endpoint.url;
+        // Build full URL from route
+        const baseUrl = '/html-service/v0';
+        const url = `${baseUrl}${endpoint.route}`;
         const method = endpoint.method || 'POST';
 
         console.log(`   URL: ${url}`);
         console.log(`   Method: ${method}`);
+        console.log(`   Endpoint config:`, endpoint);
 
         const options = {
             method: method,
@@ -349,9 +358,11 @@ class PlaygroundController extends HTMLElement {
 
         if (method === 'POST') {
             // Determine payload format based on endpoint
-            if (endpointKey === 'dict_and_nodes_to_html') {
+            if (endpointKey === 'dict-and-nodes-to-html' || endpointKey === 'hashes-to-html') {
+                // These endpoints expect the payload as-is
                 options.body = JSON.stringify(payload);
             } else {
+                // HTML transformation endpoints expect { html: "..." }
                 options.body = JSON.stringify({ html: payload });
             }
             console.log(`   Payload size: ${options.body.length} bytes`);
