@@ -3,116 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Service - Dashboard</title>
+    <title>HTML Service Admin - Dashboard</title>
 
-    <!-- Reusing v0.1.0 base styles (common + dashboard) -->
-    <link rel="stylesheet" href="../v0.1.0/css/common.css">
-    <link rel="stylesheet" href="../v0.1.0/css/dashboard.css">
+    <!-- v0.1.1 Styles (no duplication) -->
+    <link rel="stylesheet" href="../v0.1.1/css/common.css">
+    <link rel="stylesheet" href="../v0.1.1/css/dashboard.css">
 </head>
 <body>
-    <!-- Top Navigation (from v0.1.1) -->
-    <top-nav current-page="dashboard"></top-nav>
+    <!-- Top Navigation -->
+    <top-nav current-page="index"></top-nav>
 
     <div class="container">
-        <!-- Dashboard Header -->
-        <header class="dashboard-header">
-            <div class="hero-section">
-                <h1>🎨 HTML Transformation Service</h1>
-                <p class="subtitle">Parse, transform, and analyze HTML with powerful endpoints</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="total-endpoints">0</div>
-                    <div class="stat-label">Total Endpoints</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="sample-files">3</div>
-                    <div class="stat-label">Sample Files</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">0ms</div>
-                    <div class="stat-label">Avg Response</div>
-                </div>
-            </div>
+        <!-- Header -->
+        <header class="page-header">
+            <h1>🔧 HTML Transformation Service</h1>
+            <p class="subtitle">Interactive API testing and documentation</p>
         </header>
 
+        <!-- Service Info Card -->
+        <section class="card" id="service-info">
+            <!-- Will be populated by dashboard.js -->
+        </section>
+
+        <!-- API Endpoints Overview -->
+        <section class="card" id="endpoints-overview">
+            <!-- Will be populated by dashboard.js -->
+        </section>
+
         <!-- Quick Actions -->
-        <section class="section">
-            <h2>🚀 Quick Actions</h2>
-            <div class="action-cards">
-                <a href="./playground.html" class="action-card">
-                    <div class="action-icon">🎮</div>
-                    <h3>Playground</h3>
-                    <p>Interactive testing environment</p>
-                </a>
-
-                <a href="#endpoints" class="action-card">
-                    <div class="action-icon">📚</div>
-                    <h3>API Reference</h3>
-                    <p>Browse available endpoints</p>
-                </a>
-
-                <a href="#samples" class="action-card">
-                    <div class="action-icon">📄</div>
-                    <h3>Sample Files</h3>
-                    <p>View HTML samples</p>
-                </a>
-            </div>
-        </section>
-
-        <!-- Available Endpoints -->
-        <section class="section" id="endpoints">
-            <h2>📚 Available Endpoints</h2>
-            <div id="endpoints-list" class="endpoints-list">
-                <!-- Populated by dashboard.js -->
-            </div>
-        </section>
-
-        <!-- Sample Files -->
-        <section class="section" id="samples">
-            <h2>📄 Sample Files</h2>
-            <div class="samples-grid">
-                <div class="sample-card" data-sample="simple">
-                    <div class="sample-icon">📝</div>
-                    <h3>Simple HTML</h3>
-                    <p>Basic structure for testing</p>
-                    <span class="sample-meta">~15 text nodes, depth 5</span>
-                </div>
-
-                <div class="sample-card" data-sample="complex">
-                    <div class="sample-icon">🔧</div>
-                    <h3>Complex HTML</h3>
-                    <p>Deeply nested structure</p>
-                    <span class="sample-meta">100+ text nodes, depth 15+</span>
-                </div>
-
-                <div class="sample-card" data-sample="dashboard">
-                    <div class="sample-icon">📊</div>
-                    <h3>Dashboard</h3>
-                    <p>This page (self-referential)</p>
-                    <span class="sample-meta">Varies by viewport</span>
-                </div>
-            </div>
+        <section class="card" id="quick-actions">
+            <!-- Will be populated by dashboard.js -->
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>HTML Service Admin UI v0.1.5 (IFD Compliant - UI Improvements)</p>
+            <p>HTML Service Admin UI v0.1.5</p>
         </footer>
     </div>
 
-    <!-- Toast Container (for notifications) -->
-    <div id="toast-container" class="toast-container"></div>
-
-    <!-- Scripts -->
-    <!-- Navigation component (from v0.1.1) -->
+    <!-- v0.1.1 Components -->
     <script src="../v0.1.1/components/top-nav/top-nav.js"></script>
 
-    <!-- API Service (from v0.1.0) -->
-    <script src="../v0.1.0/js/services/api-client.js"></script>
-
-    <!-- Dashboard logic (from v0.1.0) -->
-    <script src="../v0.1.0/js/dashboard.js"></script>
+    <!-- v0.1.1 Services and App Logic (dashboard doesn't need refactored API client yet) -->
+    <script src="../v0.1.1/js/services/api-client.js"></script>
+    <script src="../v0.1.1/js/dashboard.js"></script>
 </body>
 </html>
