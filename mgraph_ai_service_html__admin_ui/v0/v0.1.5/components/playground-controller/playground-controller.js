@@ -6,13 +6,13 @@
  */
 
 // Import samples
-import { Samples } from './samples.js';
+import { Samples } from '../../../v0.1.5/data/samples.js';
 
 // Import config from v0.1.3 (reuse)
-import { Endpoints__Config } from '../../v0.1.3/js/config/Endpoints__Config.js';
+import { Endpoints__Config } from '../../../v0.1.3/js/config/Endpoints__Config.js';
 
 // Import syntax highlighter from v0.1.4 (reuse)
-import { Syntax__Highlighter } from '../../v0.1.4/js/utils/Syntax__Highlighter.js';
+import { Syntax__Highlighter } from '../../../v0.1.4/js/utils/Syntax__Highlighter.js';
 
 /**
  * Playground Controller Component
@@ -274,15 +274,33 @@ class PlaygroundController extends HTMLElement {
 
             console.log('🌐 Calling reconstruction endpoint...');
             console.log('   Payload:', payload);
-            const result = await this.callEndpoint('hashes-to-html', payload);
 
-            console.log('📥 Rebuild response received:', result);
+            const url = '/hashes/to/html';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
 
-            // Store result - v0.1.3 endpoints return the data directly
-            this.currentCreatedHtml = result.html || result;
+            console.log(`   Response status: ${response.status}`);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`   Error: ${errorText}`);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+
+            // The response is HTML text, not JSON!
+            const htmlResult = await response.text();
+            console.log('📥 Rebuild response received (HTML):', htmlResult.substring(0, 100) + '...');
+
+            // Store result
+            this.currentCreatedHtml = htmlResult;
 
             // Display result with syntax highlighting
-            this.createdHtmlOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(this.currentCreatedHtml, 'html')}</pre>`;
+            this.createdHtmlOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(htmlResult, 'html')}</pre>`;
 
             this.showStatus('success', 'HTML rebuilt successfully!');
             console.log('✅ Rebuild complete!');
