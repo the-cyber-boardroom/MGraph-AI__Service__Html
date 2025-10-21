@@ -340,9 +340,9 @@ class PlaygroundController extends HTMLElement {
             throw new Error(`Endpoint "${endpointKey}" not found`);
         }
 
-        // Build full URL from route
-        const baseUrl = '/html-service/v0';
-        const url = `${baseUrl}${endpoint.route}`;
+        // Use the route directly - the service is already mounted correctly
+        // Don't add /html-service/v0 prefix!
+        const url = endpoint.route;
         const method = endpoint.method || 'POST';
 
         console.log(`   URL: ${url}`);
