@@ -1,10 +1,12 @@
 /**
- * HTML Edit Mode Component - v0.1.6
+ * HTML Edit Mode Component - v0.1.6 (Refactored with ComponentUtils)
  * Edit mode with textarea and character count
- * 
+ *
  * Emits:
  *   html-changed - { html: string }
  */
+
+import { ComponentUtils } from '../../../../v0.1.6/utils/ComponentUtils.js';
 
 class HtmlEditMode extends HTMLElement {
     constructor() {
@@ -15,38 +17,25 @@ class HtmlEditMode extends HTMLElement {
     }
 
     async connectedCallback() {
-        await this.loadTemplate();
-        this.attachListeners();
-        this.loadStyles();
-        this.updateCharCount();
-    }
+        ComponentUtils.loadStyles(
+            'html-edit-mode-styles',
+            '../v0.1.6/components/column-original/html-edit-mode/html-edit-mode.css'
+        );
 
-    async loadTemplate() {
-        try {
-            const response = await fetch('../v0.1.6/components/column-original/html-edit-mode/html-edit-mode.html');
-            const html = await response.text();
-            this.innerHTML = html;
-            this.templateLoaded = true;
-            console.log('✏️ HtmlEditMode: Template loaded');
-        } catch (error) {
-            console.error('✏️ HtmlEditMode: Failed to load template', error);
-            this.innerHTML = '<div class="error">Failed to load edit mode</div>';
-        }
-    }
+        this.templateLoaded = await ComponentUtils.loadTemplate(
+            this,
+            '../v0.1.6/components/column-original/html-edit-mode/html-edit-mode.html'
+        );
 
-    loadStyles() {
-        if (!document.getElementById('html-edit-mode-styles')) {
-            const link = document.createElement('link');
-            link.id = 'html-edit-mode-styles';
-            link.rel = 'stylesheet';
-            link.href = '../v0.1.6/components/column-original/html-edit-mode/html-edit-mode.css';
-            document.head.appendChild(link);
+        if (this.templateLoaded) {
+            this.attachListeners();
+            this.updateCharCount();
         }
     }
 
     attachListeners() {
-        const textarea = this.querySelector('#html-textarea');
-        textarea?.addEventListener('input', () => {
+        const textarea = ComponentUtils.$(this, '#html-textarea');
+        ComponentUtils.on(textarea, 'input', () => {
             this.htmlContent = textarea.value;
             this.updateCharCount();
             this.emitHtmlChanged();
@@ -54,17 +43,14 @@ class HtmlEditMode extends HTMLElement {
     }
 
     updateCharCount() {
-        const charCount = this.querySelector('#char-count');
+        const charCount = ComponentUtils.$(this, '#char-count');
         if (charCount) {
             charCount.textContent = this.htmlContent.length.toLocaleString();
         }
     }
 
     emitHtmlChanged() {
-        this.dispatchEvent(new CustomEvent('html-changed', {
-            detail: { html: this.htmlContent },
-            bubbles: true
-        }));
+        ComponentUtils.emitEvent(this, 'html-changed', { html: this.htmlContent });
     }
 
     // Public API
@@ -74,7 +60,7 @@ class HtmlEditMode extends HTMLElement {
 
     setHtml(html) {
         this.htmlContent = html;
-        const textarea = this.querySelector('#html-textarea');
+        const textarea = ComponentUtils.$(this, '#html-textarea');
         if (textarea) {
             textarea.value = html;
         }
@@ -87,4 +73,4 @@ class HtmlEditMode extends HTMLElement {
 }
 
 customElements.define('html-edit-mode', HtmlEditMode);
-console.log('✅ HtmlEditMode component registered');
+console.log('✅ HtmlEditMode component registered (with ComponentUtils)');

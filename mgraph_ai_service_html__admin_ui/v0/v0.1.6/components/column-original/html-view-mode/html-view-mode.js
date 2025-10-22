@@ -1,8 +1,9 @@
 /**
- * HTML View Mode Component - v0.1.6
+ * HTML View Mode Component - v0.1.6 (Refactored with ComponentUtils)
  * View mode with syntax highlighting
  */
 
+import { ComponentUtils      } from '../../../../v0.1.6/utils/ComponentUtils.js';
 import { Syntax__Highlighter } from '../../../../v0.1.4/js/utils/Syntax__Highlighter.js';
 
 class HtmlViewMode extends HTMLElement {
@@ -14,36 +15,23 @@ class HtmlViewMode extends HTMLElement {
     }
 
     async connectedCallback() {
-        await this.loadTemplate();
-        this.loadStyles();
-        this.render();
-    }
+        ComponentUtils.loadStyles(
+            'html-view-mode-styles',
+            '../v0.1.6/components/column-original/html-view-mode/html-view-mode.css'
+        );
 
-    async loadTemplate() {
-        try {
-            const response = await fetch('../v0.1.6/components/column-original/html-view-mode/html-view-mode.html');
-            const html = await response.text();
-            this.innerHTML = html;
-            this.templateLoaded = true;
-            console.log('👁️ HtmlViewMode: Template loaded');
-        } catch (error) {
-            console.error('👁️ HtmlViewMode: Failed to load template', error);
-            this.innerHTML = '<div class="error">Failed to load view mode</div>';
-        }
-    }
+        this.templateLoaded = await ComponentUtils.loadTemplate(
+            this,
+            '../v0.1.6/components/column-original/html-view-mode/html-view-mode.html'
+        );
 
-    loadStyles() {
-        if (!document.getElementById('html-view-mode-styles')) {
-            const link = document.createElement('link');
-            link.id = 'html-view-mode-styles';
-            link.rel = 'stylesheet';
-            link.href = '../v0.1.6/components/column-original/html-view-mode/html-view-mode.css';
-            document.head.appendChild(link);
+        if (this.templateLoaded) {
+            this.render();
         }
     }
 
     render() {
-        const output = this.querySelector('#syntax-output');
+        const output = ComponentUtils.$(this, '#syntax-output');
         if (!output) return;
 
         if (!this.htmlContent.trim()) {
@@ -80,4 +68,4 @@ class HtmlViewMode extends HTMLElement {
 }
 
 customElements.define('html-view-mode', HtmlViewMode);
-console.log('✅ HtmlViewMode component registered');
+console.log('✅ HtmlViewMode component registered (with ComponentUtils)');

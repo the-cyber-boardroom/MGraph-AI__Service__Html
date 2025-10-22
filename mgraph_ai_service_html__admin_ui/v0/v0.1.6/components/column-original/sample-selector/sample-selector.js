@@ -1,12 +1,13 @@
 /**
- * Sample Selector Component - v0.1.6
+ * Sample Selector Component - v0.1.6 (Refactored with ComponentUtils)
  * Dropdown for selecting HTML samples
- * 
+ *
  * Emits:
  *   sample-selected - { sampleName: string, sampleContent: string }
  */
 
-import { Samples } from '../../../../v0.1.5/data/samples.js';
+import { ComponentUtils } from '../../../../v0.1.6/utils/ComponentUtils.js';
+import { Samples        } from '../../../../v0.1.5/data/samples.js';
 
 class SampleSelector extends HTMLElement {
     constructor() {
@@ -17,17 +18,11 @@ class SampleSelector extends HTMLElement {
     connectedCallback() {
         this.render();
         this.attachListeners();
-        this.loadStyles();
-    }
 
-    loadStyles() {
-        if (!document.getElementById('sample-selector-styles')) {
-            const link = document.createElement('link');
-            link.id = 'sample-selector-styles';
-            link.rel = 'stylesheet';
-            link.href = '../v0.1.6/components/column-original/sample-selector/sample-selector.css';
-            document.head.appendChild(link);
-        }
+        ComponentUtils.loadStyles(
+            'sample-selector-styles',
+            '../v0.1.6/components/column-original/sample-selector/sample-selector.css'
+        );
     }
 
     render() {
@@ -45,34 +40,31 @@ class SampleSelector extends HTMLElement {
     }
 
     attachListeners() {
-        const select = this.querySelector('#sample-select');
-        select?.addEventListener('change', (e) => {
+        const select = ComponentUtils.$(this, '#sample-select');
+        ComponentUtils.on(select, 'change', (e) => {
             this.handleSampleChange(e.target.value);
         });
     }
 
     handleSampleChange(sampleName) {
         console.log(`📦 SampleSelector: Selected ${sampleName}`);
-        
+
         if (!sampleName || sampleName === 'custom') {
             return;
         }
 
         const sampleContent = Samples[sampleName];
         if (sampleContent) {
-            this.dispatchEvent(new CustomEvent('sample-selected', {
-                detail: { 
-                    sampleName,
-                    sampleContent 
-                },
-                bubbles: true
-            }));
+            ComponentUtils.emitEvent(this, 'sample-selected', {
+                sampleName,
+                sampleContent
+            });
         }
     }
 
     // Public API
     reset() {
-        const select = this.querySelector('#sample-select');
+        const select = ComponentUtils.$(this, '#sample-select');
         if (select) {
             select.value = 'custom';
         }
@@ -80,4 +72,4 @@ class SampleSelector extends HTMLElement {
 }
 
 customElements.define('sample-selector', SampleSelector);
-console.log('✅ SampleSelector component registered');
+console.log('✅ SampleSelector component registered (with ComponentUtils)');
