@@ -1,90 +1,58 @@
 /**
- * Column Middle Styles - v0.1.6
- * Dual-view layout for Dict + Hashes
+ * Column Middle Styles - v0.1.6 (Refactored)
+ * Dual-view and dual-edit layouts
  */
 
-/* Middle column specific */
-.middle-column .column-content {
+.middle-column {
     display: flex;
     flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    overflow: hidden;
+    height: 100%;
 }
 
-.middle-column .column-mode-view {
+.column-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Mode containers */
+.mode-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Dual View Grid (View Mode) */
+.dual-view-grid {
     display: grid;
     grid-template-rows: 1fr 1fr;
     gap: 1rem;
-    flex: 1;
-}
-
-.middle-view {
-    display: flex;
-    flex-direction: column;
+    height: 100%;
     overflow: hidden;
 }
 
-.middle-view-header {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
+.dual-view-grid json-view-mode {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    overflow: hidden;
 }
 
-.middle-view-content {
-    flex: 1;
-    overflow: auto;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 1rem;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-    line-height: 1.6;
-}
-
-/* Edit mode styles */
-.edit-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+/* Dual Edit Grid (Edit Mode) */
+.dual-edit-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
     gap: 1rem;
+    height: 100%;
     overflow: hidden;
 }
 
-.edit-section {
-    flex: 1;
+.dual-edit-grid json-edit-mode {
     display: flex;
-    flex-direction: column;
     overflow: hidden;
-}
-
-.edit-section-header {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.edit-textarea {
-    flex: 1;
-    padding: 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    resize: none;
-    overflow: auto;
-    background: white;
-}
-
-.edit-textarea:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }

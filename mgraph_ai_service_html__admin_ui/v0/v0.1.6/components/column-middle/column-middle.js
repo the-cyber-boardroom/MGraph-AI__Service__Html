@@ -1,128 +1,44 @@
 /**
- * Column Middle Component - v0.1.6
- * Layout & Content Objects (Dict + Hashes)
- * 
+ * Column Middle Component - v0.1.6 (Refactored)
+ * Orchestrates: column-header, json-view-mode (x2), json-edit-mode (x2)
+ *
  * Emits:
  *   parse-requested - {}
  *   dict-changed - { dict: object }
  *   hashes-changed - { hashes: object }
  */
 
-import { Syntax__Highlighter } from '../../../v0.1.4/js/utils/Syntax__Highlighter.js';
+import { ComponentUtils } from '../../../v0.1.6/utils/ComponentUtils.js';
 
 class ColumnMiddle extends HTMLElement {
     constructor() {
         super();
-        console.log('🧩 ColumnMiddle constructor');
+        console.log('🧩 ColumnMiddle constructor (refactored)');
         this.mode = 'view'; // 'view' | 'edit'
-        this.dict = null;
-        this.hashes = null;
+        this.templateLoaded = false;
     }
 
-    connectedCallback() {
-        this.render();
-        this.attachListeners();
-        
-        // Load CSS
-        this.loadStyles();
-    }
+    async connectedCallback() {
+        ComponentUtils.loadStyles(
+            'column-middle-styles',
+            '../v0.1.6/components/column-middle/column-middle.css'
+        );
 
-    loadStyles() {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '../v0.1.6/components/column-middle/column-middle.css';
-        document.head.appendChild(link);
-    }
+        this.templateLoaded = await ComponentUtils.loadTemplate(
+            this,
+            '../v0.1.6/components/column-middle/column-middle.html'
+        );
 
-    render() {
-        this.innerHTML = `
-            <div class="column middle-column" id="column-middle" data-mode="${this.mode}">
-                <div class="column-header">
-                    <h2>🧩 Layout & Content Objects</h2>
-
-                    <mode-tabs 
-                        modes="view,edit" 
-                        active="${this.mode}"
-                        column-id="middle"
-                    ></mode-tabs>
-
-                    <div class="column-actions">
-                        <button class="btn-small btn-primary" id="btn-transform-parse">
-                            ▶ Parse
-                        </button>
-                    </div>
-                </div>
-
-                <div class="column-content">
-                    <!-- VIEW MODE (default - formatted display) -->
-                    <div class="column-mode column-mode-view">
-                        <!-- View 1: HTML Dict (Structure/Layout) -->
-                        <div class="middle-view">
-                            <div class="middle-view-header">
-                                📐 HTML Dict (Structure/Layout)
-                            </div>
-                            <div class="middle-view-content" id="dict-output">
-                                <div class="empty-state">
-                                    <div class="empty-state-icon">📐</div>
-                                    <div class="empty-state-text">HTML structure will appear here after parsing</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- View 2: Text Nodes/Hashes (Content) -->
-                        <div class="middle-view">
-                            <div class="middle-view-header">
-                                🔤 Text Nodes + Hashes (Content)
-                            </div>
-                            <div class="middle-view-content" id="hashes-output">
-                                <div class="empty-state">
-                                    <div class="empty-state-icon">🔤</div>
-                                    <div class="empty-state-text">Text nodes will appear here after parsing</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- EDIT MODE (raw JSON editing) -->
-                    <div class="column-mode column-mode-edit" style="display: none;">
-                        <div class="edit-area">
-                            <div class="edit-section">
-                                <div class="edit-section-header">
-                                    📐 HTML Dict JSON (Raw)
-                                </div>
-                                <textarea
-                                    id="dict-edit"
-                                    class="edit-textarea"
-                                    placeholder='{"tag": "html", "attrs": {...}, "nodes": [...]}'
-                                    spellcheck="false"
-                                ></textarea>
-                            </div>
-
-                            <div class="edit-section">
-                                <div class="edit-section-header">
-                                    🔤 Text Hashes JSON (Raw)
-                                </div>
-                                <textarea
-                                    id="hashes-edit"
-                                    class="edit-textarea"
-                                    placeholder='{"hash1": "text content", "hash2": "more text"}'
-                                    spellcheck="false"
-                                ></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        if (this.templateLoaded) {
+            this.attachListeners();
+        }
     }
 
     attachListeners() {
         // Parse button
-        const parseBtn = this.querySelector('#btn-transform-parse');
-        parseBtn?.addEventListener('click', () => {
-            this.dispatchEvent(new CustomEvent('parse-requested', {
-                bubbles: true
-            }));
+        const parseBtn = ComponentUtils.$(this, '#btn-parse');
+        ComponentUtils.on(parseBtn, 'click', () => {
+            ComponentUtils.emitEvent(this, 'parse-requested');
         });
 
         // Mode change listener
@@ -132,110 +48,97 @@ class ColumnMiddle extends HTMLElement {
             }
         });
 
-        // Edit textarea changes
-        const dictEdit = this.querySelector('#dict-edit');
-        dictEdit?.addEventListener('blur', () => {
-            this.syncFromEdit();
-        });
+        // Listen to JSON changes from edit mode
+        this.addEventListener('json-changed', (e) => {
+            const target = e.target;
 
-        const hashesEdit = this.querySelector('#hashes-edit');
-        hashesEdit?.addEventListener('blur', () => {
-            this.syncFromEdit();
+            if (target.id === 'dict-edit' && e.detail.isValid) {
+                ComponentUtils.emitEvent(this, 'dict-changed', {
+                    dict: e.detail.json
+                });
+            } else if (target.id === 'hashes-edit' && e.detail.isValid) {
+                ComponentUtils.emitEvent(this, 'hashes-changed', {
+                    hashes: e.detail.json
+                });
+            }
         });
     }
 
     switchMode(mode) {
         console.log(`🧩 ColumnMiddle: Switching to ${mode} mode`);
         this.mode = mode;
-        
-        const column = this.querySelector('#column-middle');
-        column.setAttribute('data-mode', mode);
 
-        if (mode === 'edit') {
-            this.populateEditMode();
-        } else if (mode === 'view') {
+        // Update column data-mode attribute
+        const column = ComponentUtils.$(this, '.middle-column');
+        column?.setAttribute('data-mode', mode);
+
+        // Update header
+        const header = ComponentUtils.$(this, 'column-header');
+        header?.setAttribute('active-mode', mode);
+
+        // Show/hide mode containers
+        const viewContainer = ComponentUtils.$(this, '.mode-view');
+        const editContainer = ComponentUtils.$(this, '.mode-edit');
+
+        if (mode === 'view') {
+            ComponentUtils.toggle(viewContainer, true);
+            ComponentUtils.toggle(editContainer, false);
+
+            // Sync from edit mode if switching back
             this.syncFromEdit();
+        } else {
+            ComponentUtils.toggle(viewContainer, false);
+            ComponentUtils.toggle(editContainer, true);
+
+            // Populate edit mode with current data
+            this.populateEditMode();
         }
     }
 
     populateEditMode() {
         console.log('🧩 ColumnMiddle: Populating edit mode');
-        
-        const dictEdit = this.querySelector('#dict-edit');
-        const hashesEdit = this.querySelector('#hashes-edit');
 
-        if (dictEdit && this.dict) {
-            dictEdit.value = JSON.stringify(this.dict, null, 2);
+        const dictEdit = ComponentUtils.$(this, '#dict-edit');
+        const hashesEdit = ComponentUtils.$(this, '#hashes-edit');
+
+        const dictView = ComponentUtils.$(this, '#dict-view');
+        const hashesView = ComponentUtils.$(this, '#hashes-view');
+
+        if (dictEdit && dictView) {
+            const dictData = dictView.getData();
+            if (dictData) {
+                dictEdit.setData(dictData);
+            }
         }
 
-        if (hashesEdit && this.hashes) {
-            hashesEdit.value = JSON.stringify(this.hashes, null, 2);
+        if (hashesEdit && hashesView) {
+            const hashesData = hashesView.getData();
+            if (hashesData) {
+                hashesEdit.setData(hashesData);
+            }
         }
     }
 
     syncFromEdit() {
         console.log('🧩 ColumnMiddle: Syncing from edit mode');
-        
-        const dictEdit = this.querySelector('#dict-edit');
-        const hashesEdit = this.querySelector('#hashes-edit');
 
-        try {
-            if (dictEdit?.value.trim()) {
-                this.dict = JSON.parse(dictEdit.value);
-            }
+        const dictEdit = ComponentUtils.$(this, '#dict-edit');
+        const hashesEdit = ComponentUtils.$(this, '#hashes-edit');
 
-            if (hashesEdit?.value.trim()) {
-                this.hashes = JSON.parse(hashesEdit.value);
-            }
+        const dictView = ComponentUtils.$(this, '#dict-view');
+        const hashesView = ComponentUtils.$(this, '#hashes-view');
 
-            this.renderViewMode();
-            
-            // Emit changes
-            this.dispatchEvent(new CustomEvent('dict-changed', {
-                detail: { dict: this.dict },
-                bubbles: true
-            }));
-            
-            this.dispatchEvent(new CustomEvent('hashes-changed', {
-                detail: { hashes: this.hashes },
-                bubbles: true
-            }));
-
-        } catch (e) {
-            console.error('🧩 ColumnMiddle: Invalid JSON', e);
-            // Don't update if invalid JSON
-        }
-    }
-
-    renderViewMode() {
-        console.log('🧩 ColumnMiddle: Rendering view mode');
-        
-        const dictOutput = this.querySelector('#dict-output');
-        const hashesOutput = this.querySelector('#hashes-output');
-
-        if (dictOutput) {
-            if (this.dict) {
-                dictOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(this.dict, 'json')}</pre>`;
-            } else {
-                dictOutput.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📐</div>
-                        <div class="empty-state-text">HTML structure will appear here after parsing</div>
-                    </div>
-                `;
+        if (dictEdit && dictView) {
+            const dictData = dictEdit.getData();
+            if (dictData) {
+                dictView.setData(dictData);
             }
         }
 
-        if (hashesOutput) {
-            if (this.hashes) {
-                hashesOutput.innerHTML = `<pre class="syntax-output">${Syntax__Highlighter.highlight(this.hashes, 'json')}</pre>`;
-            } else {
-                hashesOutput.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🔤</div>
-                        <div class="empty-state-text">Text nodes will appear here after parsing</div>
-                    </div>
-                `;
+        if (hashesEdit && hashesView) {
+            const hashesData = hashesEdit.getData();
+            if (hashesData) {
+                hashesView.setData(hashesData);
             }
         }
     }
@@ -243,27 +146,54 @@ class ColumnMiddle extends HTMLElement {
     // Public API
     setData(dict, hashes) {
         console.log('🧩 ColumnMiddle: Setting data', dict, hashes);
-        this.dict = dict;
-        this.hashes = hashes;
-        
-        if (this.mode === 'view') {
-            this.renderViewMode();
-        } else {
-            this.populateEditMode();
+
+        const dictView = ComponentUtils.$(this, '#dict-view');
+        const hashesView = ComponentUtils.$(this, '#hashes-view');
+
+        if (dictView) {
+            dictView.setData(dict);
+        }
+
+        if (hashesView) {
+            hashesView.setData(hashes);
+        }
+
+        // If in edit mode, also update edit components
+        if (this.mode === 'edit') {
+            const dictEdit = ComponentUtils.$(this, '#dict-edit');
+            const hashesEdit = ComponentUtils.$(this, '#hashes-edit');
+
+            if (dictEdit) {
+                dictEdit.setData(dict);
+            }
+
+            if (hashesEdit) {
+                hashesEdit.setData(hashes);
+            }
         }
     }
 
     getData() {
-        // If in edit mode, sync first
+        // Always get from current mode
         if (this.mode === 'edit') {
-            this.syncFromEdit();
+            const dictEdit = ComponentUtils.$(this, '#dict-edit');
+            const hashesEdit = ComponentUtils.$(this, '#hashes-edit');
+
+            return {
+                dict: dictEdit ? dictEdit.getData() : null,
+                hashes: hashesEdit ? hashesEdit.getData() : null
+            };
+        } else {
+            const dictView = ComponentUtils.$(this, '#dict-view');
+            const hashesView = ComponentUtils.$(this, '#hashes-view');
+
+            return {
+                dict: dictView ? dictView.getData() : null,
+                hashes: hashesView ? hashesView.getData() : null
+            };
         }
-        return {
-            dict: this.dict,
-            hashes: this.hashes
-        };
     }
 }
 
 customElements.define('column-middle', ColumnMiddle);
-console.log('✅ ColumnMiddle component registered');
+console.log('✅ ColumnMiddle component registered (refactored)');
