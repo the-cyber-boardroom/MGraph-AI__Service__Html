@@ -6,4 +6,4 @@ FAST_API__TITLE                   = "Html Service"
 FAST_API__DESCRIPTION             = "Service with helper methods to export and manipulate html documents."
 LAMBDA_DEPENDENCIES__HTML_SERVICE = ['osbot-fast-api-serverless==1.24.0']
 UI__CONSOLE__MAJOR__VERSION       = "v0"
-UI__CONSOLE__LATEST__VERSION      = "v0.1.6"
+UI__CONSOLE__LATEST__VERSION      = "v0.1.7"
