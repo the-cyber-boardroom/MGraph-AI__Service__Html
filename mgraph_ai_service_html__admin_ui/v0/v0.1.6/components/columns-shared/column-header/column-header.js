@@ -17,8 +17,8 @@ import { ComponentUtils } from '../../../../v0.1.6/utils/ComponentUtils.js';
 
 class ColumnHeader extends HTMLElement {
     // Static configuration
-    static STYLE_ID = 'column-header-styles';
     static STYLE_PATH = '../v0.1.6/components/columns-shared/column-header/column-header.css';
+    static MODE_TABS_STYLE_PATH = '../v0.1.6/components/mode-tabs/mode-tabs.css';
 
     constructor() {
         super();
@@ -29,7 +29,6 @@ class ColumnHeader extends HTMLElement {
     }
 
     connectedCallback() {
-        //ComponentUtils.loadStyles(ColumnHeader.STYLE_ID, ColumnHeader.STYLE_PATH);
         this.render();
     }
 
@@ -46,11 +45,9 @@ class ColumnHeader extends HTMLElement {
         if (!headerDiv) {
             // First render - create structure
 
-            // Add external CSS link
-            const linkElem = document.createElement('link');
-            linkElem.setAttribute('rel', 'stylesheet');
-            linkElem.setAttribute('href', ColumnHeader.STYLE_PATH);
-            this.shadowRoot.appendChild(linkElem);
+            // Load CSS files into Shadow DOM using ComponentUtils
+            ComponentUtils.loadShadowStyles(this.shadowRoot, ColumnHeader.STYLE_PATH);
+            ComponentUtils.loadShadowStyles(this.shadowRoot, ColumnHeader.MODE_TABS_STYLE_PATH);
 
             // Create header container
             headerDiv = document.createElement('div');
@@ -115,4 +112,4 @@ class ColumnHeader extends HTMLElement {
 }
 
 customElements.define('column-header', ColumnHeader);
-console.log('✅ ColumnHeader component registered (Shadow DOM + External CSS + Smart Rendering)');
+console.log('✅ ColumnHeader component registered (Shadow DOM + ComponentUtils)');

@@ -39,11 +39,7 @@ class ColumnCreated extends HTMLElement {
                 <div class="column-header">
                     <h2>✨ Created HTML</h2>
 
-                    <mode-tabs 
-                        modes="view" 
-                        active="${this.mode}"
-                        column-id="created"
-                    ></mode-tabs>
+                    
 
                     <div class="column-actions">
                         <button class="btn-small btn-primary" id="btn-transform-rebuild">
@@ -132,7 +128,7 @@ class ColumnCreated extends HTMLElement {
 
     // Public API
     setHtml(html) {
-        console.log('✨ ColumnCreated: Setting HTML', html?.substring(0, 100));
+        //console.log('✨ ColumnCreated: Setting HTML', html?.substring(0, 100));
         this.createdHtml = html;
         this.renderOutput();
     }

@@ -13,7 +13,7 @@ class ColumnOriginal extends HTMLElement {
     constructor() {
         super();
         console.log('📝 ColumnOriginal constructor (refactored)');
-        this.mode = 'edit'; // 'edit' | 'view'
+        this.mode = 'view'; // 'edit' | 'view'
         this.templateLoaded = false;
     }
 

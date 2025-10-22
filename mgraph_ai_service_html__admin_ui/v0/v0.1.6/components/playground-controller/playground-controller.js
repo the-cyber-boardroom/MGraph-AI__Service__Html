@@ -33,9 +33,9 @@ class PlaygroundController extends HTMLElement {
         this.setupEventListeners();
 
         // Auto-run full flow on load
-        setTimeout(() => {
-            this.runFullFlow();
-        }, 500);
+        // setTimeout(() => {
+        //     this.runFullFlow();
+        // }, 500);
     }
 
     disconnectedCallback() {

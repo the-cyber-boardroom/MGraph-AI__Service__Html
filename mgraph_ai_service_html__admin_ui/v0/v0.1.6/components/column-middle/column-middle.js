@@ -30,16 +30,24 @@ class ColumnMiddle extends HTMLElement {
         );
 
         if (this.templateLoaded) {
-            this.attachListeners();
+            // Use setTimeout to ensure DOM is fully ready
+            setTimeout(() => this.attachListeners(), 0);
         }
     }
 
     attachListeners() {
         // Parse button
         const parseBtn = ComponentUtils.$(this, '#btn-parse');
-        ComponentUtils.on(parseBtn, 'click', () => {
-            ComponentUtils.emitEvent(this, 'parse-requested');
-        });
+
+        if (parseBtn) {
+            ComponentUtils.on(parseBtn, 'click', () => {
+                console.log('🧩 ColumnMiddle: Parse button clicked');
+                ComponentUtils.emitEvent(this, 'parse-requested');
+            });
+            console.log('🧩 ColumnMiddle: Parse button listener attached');
+        } else {
+            console.error('🧩 ColumnMiddle: Parse button not found!');
+        }
 
         // Mode change listener
         this.addEventListener('mode-selected', (e) => {
@@ -62,6 +70,8 @@ class ColumnMiddle extends HTMLElement {
                 });
             }
         });
+
+        console.log('🧩 ColumnMiddle: All listeners attached');
     }
 
     switchMode(mode) {

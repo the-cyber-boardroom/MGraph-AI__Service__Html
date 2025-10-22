@@ -65,6 +65,7 @@ class HtmlEditMode extends HTMLElement {
             textarea.value = html;
         }
         this.updateCharCount();
+        this.emitHtmlChanged();
     }
 
     clear() {

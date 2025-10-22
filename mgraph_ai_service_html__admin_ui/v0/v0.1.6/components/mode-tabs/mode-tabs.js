@@ -17,7 +17,6 @@ class ModeTabs extends HTMLElement {
 
     connectedCallback() {
         this.render();
-        this.attachListeners();
     }
 
     // Attributes to observe
@@ -61,6 +60,10 @@ class ModeTabs extends HTMLElement {
                 `).join('')}
             </div>
         `;
+
+        // Attach listeners AFTER innerHTML is set
+        // Use setTimeout to ensure DOM is fully rendered
+        setTimeout(() => this.attachListeners(), 0);
     }
 
     attachListeners() {
@@ -68,19 +71,22 @@ class ModeTabs extends HTMLElement {
             tab.addEventListener('click', (e) => {
                 const mode = e.currentTarget.dataset.mode;
                 const columnId = e.currentTarget.dataset.columnId;
-                
+
                 // Update active state
                 this.setAttribute('active', mode);
-                
+
                 // Emit event
                 this.dispatchEvent(new CustomEvent('mode-selected', {
                     detail: { mode, columnId },
-                    bubbles: true
+                    bubbles: true,
+                    composed: true // Allow event to cross Shadow DOM boundary
                 }));
-                
+
                 console.log(`🔧 ModeTabs: Selected ${mode} for column ${columnId}`);
             });
         });
+
+        console.log(`🔧 ModeTabs: Attached listeners to ${this.querySelectorAll('.mode-tab').length} tabs`);
     }
 
     updateActiveTab() {

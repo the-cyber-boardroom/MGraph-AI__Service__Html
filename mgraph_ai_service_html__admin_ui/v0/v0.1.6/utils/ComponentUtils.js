@@ -48,6 +48,21 @@ class ComponentUtils {
     }
 
     /**
+     * Load external CSS file into Shadow DOM
+     * @param {ShadowRoot} shadowRoot - Shadow root to load styles into
+     * @param {string} stylePath - Path to CSS file
+     * @returns {HTMLLinkElement} The created link element
+     */
+    static loadShadowStyles(shadowRoot, stylePath) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = stylePath;
+        shadowRoot.appendChild(link);
+        console.log(`✅ Shadow styles loaded: ${stylePath}`);
+        return link;
+    }
+
+    /**
      * Wait for component to be defined
      * @param {string} tagName - Component tag name
      * @returns {Promise<void>}
