@@ -1,77 +1,37 @@
 /**
- * Column Original Styles - v0.1.6
+ * Column Original Styles - v0.1.6 (Refactored)
+ * Fixed: Vertical space issue with proper flex layout
  */
 
-/* Input area styles */
-.input-area {
+.column {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    overflow: hidden;
+    height: 100%;
+}
+
+.column-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.input-controls {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    align-items: center;
-}
-
-.input-controls select {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.875rem;
-}
-
-.input-textarea {
-    flex: 1;
-    padding: 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    resize: none;
-    overflow: auto;
-}
-
-.input-textarea:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.character-count {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.5rem;
-    text-align: right;
-}
-
-/* View mode styles */
-.view-area {
+/* Mode containers must fill remaining space */
+.mode-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.syntax-highlighted {
+/* Ensure child components fill space */
+.mode-container html-edit-mode,
+.mode-container html-view-mode {
+    display: flex;
     flex: 1;
-    overflow: auto;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 1rem;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-    line-height: 1.6;
-}
-
-.syntax-highlighted pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+    overflow: hidden;
 }

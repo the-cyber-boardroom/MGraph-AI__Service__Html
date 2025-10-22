@@ -1,93 +1,59 @@
 /**
- * Column Original Component - v0.1.6
- * Original HTML input with Edit/View modes
+ * Column Original Component - v0.1.6 (Refactored)
+ * Orchestrates: column-header, sample-selector, html-edit-mode, html-view-mode
  * 
  * Emits:
  *   html-changed - { html: string }
  *   clear-requested - {}
- *   sample-selected - { sample: string }
  */
-
-import { Syntax__Highlighter } from '../../../v0.1.4/js/utils/Syntax__Highlighter.js';
-import { Samples } from '../../../v0.1.5/data/samples.js';
 
 class ColumnOriginal extends HTMLElement {
     constructor() {
         super();
-        console.log('📝 ColumnOriginal constructor');
+        console.log('📝 ColumnOriginal constructor (refactored)');
         this.mode = 'edit'; // 'edit' | 'view'
-        this.htmlContent = '';
     }
 
     connectedCallback() {
         this.render();
         this.attachListeners();
-        
-        // Load CSS
         this.loadStyles();
     }
 
     loadStyles() {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '../v0.1.6/components/column-original/column-original.css';
-        document.head.appendChild(link);
+        if (!document.getElementById('column-original-styles')) {
+            const link = document.createElement('link');
+            link.id = 'column-original-styles';
+            link.rel = 'stylesheet';
+            link.href = '../v0.1.6/components/column-original/column-original.css';
+            document.head.appendChild(link);
+        }
     }
 
     render() {
         this.innerHTML = `
-            <div class="column" id="column-original" data-mode="${this.mode}">
-                <div class="column-header">
-                    <h2>📝 Original HTML</h2>
-                    
-                    <mode-tabs 
-                        modes="edit,view" 
-                        active="${this.mode}"
-                        column-id="original"
-                    ></mode-tabs>
-                    
-                    <div class="column-actions">
-                        <button class="btn-small btn-danger" id="btn-clear-input">Clear</button>
-                    </div>
-                </div>
+            <div class="column" data-mode="${this.mode}">
+                <column-header 
+                    title="Original HTML"
+                    icon="📝"
+                    modes="edit,view"
+                    active-mode="${this.mode}"
+                    column-id="original"
+                >
+                    <button slot="actions" class="btn-small btn-danger" id="btn-clear">Clear</button>
+                </column-header>
 
                 <div class="column-content">
-                    <!-- EDIT MODE -->
-                    <div class="column-mode column-mode-edit">
-                        <div class="input-area">
-                            <div class="input-controls">
-                                <select id="sample-selector">
-                                    <option value="">-- Select a Sample --</option>
-                                    <option value="micro">Micro HTML (Minimal)</option>
-                                    <option value="simple">Simple HTML</option>
-                                    <option value="complex">Complex HTML (Deep Nesting)</option>
-                                    <option value="custom">Custom (Paste Your Own)</option>
-                                </select>
-                            </div>
-
-                            <textarea
-                                id="html-input"
-                                class="input-textarea"
-                                placeholder="Paste your HTML here or select a sample above..."
-                                spellcheck="false"
-                            >${this.htmlContent}</textarea>
-
-                            <div class="character-count">
-                                <span id="char-count">0</span> characters
-                            </div>
-                        </div>
+                    <sample-selector></sample-selector>
+                    
+                    <!-- Edit Mode -->
+                    <div class="mode-container mode-edit" ${this.mode !== 'edit' ? 'style="display: none;"' : ''}>
+                        <html-edit-mode></html-edit-mode>
                     </div>
 
-                    <!-- VIEW MODE -->
-                    <div class="column-mode column-mode-view" style="display: none;">
-                        <div class="view-area">
-                            <div class="syntax-highlighted" id="html-view">
-                                <div class="empty-state">
-                                    <div class="empty-state-icon">👁️</div>
-                                    <div class="empty-state-text">Syntax-highlighted HTML will appear here</div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- View Mode -->
+                    <div class="mode-container mode-view" ${this.mode !== 'view' ? 'style="display: none;"' : ''}>
+                        <html-view-mode></html-view-mode>
                     </div>
                 </div>
             </div>
@@ -95,153 +61,111 @@ class ColumnOriginal extends HTMLElement {
     }
 
     attachListeners() {
-        // HTML input changes
-        const htmlInput = this.querySelector('#html-input');
-        htmlInput?.addEventListener('input', () => {
-            this.htmlContent = htmlInput.value;
-            this.updateCharCount();
-            this.emitHtmlChanged();
+        // Listen to sample selection
+        this.addEventListener('sample-selected', (e) => {
+            const { sampleContent } = e.detail;
+            this.setHtml(sampleContent);
         });
 
-        // Sample selector
-        const sampleSelector = this.querySelector('#sample-selector');
-        sampleSelector?.addEventListener('change', (e) => {
-            this.loadSample(e.target.value);
+        // Listen to HTML changes from edit mode
+        this.addEventListener('html-changed', (e) => {
+            // Bubble up (already bubbling, but we could transform if needed)
+            console.log('📝 ColumnOriginal: HTML changed');
         });
 
-        // Clear button
-        const clearBtn = this.querySelector('#btn-clear-input');
-        clearBtn?.addEventListener('click', () => {
-            this.clearInput();
-        });
-
-        // Mode change listener
+        // Listen to mode changes
         this.addEventListener('mode-selected', (e) => {
             if (e.detail.columnId === 'original') {
                 this.switchMode(e.detail.mode);
             }
         });
 
-        // Initial char count
-        this.updateCharCount();
+        // Clear button
+        const clearBtn = this.querySelector('#btn-clear');
+        clearBtn?.addEventListener('click', () => {
+            this.clear();
+        });
     }
 
     switchMode(mode) {
         console.log(`📝 ColumnOriginal: Switching to ${mode} mode`);
         this.mode = mode;
-        
-        const column = this.querySelector('#column-original');
+
+        // Update column data-mode attribute
+        const column = this.querySelector('.column');
         column.setAttribute('data-mode', mode);
 
-        if (mode === 'view') {
-            this.updateSyntaxHighlighting();
-        }
-    }
+        // Update header
+        const header = this.querySelector('column-header');
+        header?.setAttribute('active-mode', mode);
 
-    updateCharCount() {
-        const charCount = this.querySelector('#char-count');
-        if (charCount) {
-            charCount.textContent = this.htmlContent.length.toLocaleString();
-        }
-    }
+        // Show/hide mode containers
+        const editContainer = this.querySelector('.mode-edit');
+        const viewContainer = this.querySelector('.mode-view');
 
-    updateSyntaxHighlighting() {
-        const htmlView = this.querySelector('#html-view');
-        
-        if (!this.htmlContent.trim()) {
-            htmlView.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">👁️</div>
-                    <div class="empty-state-text">Syntax-highlighted HTML will appear here</div>
-                </div>
-            `;
-            return;
-        }
-
-        const highlighted = Syntax__Highlighter.highlight(this.htmlContent, 'html');
-        htmlView.innerHTML = `<pre class="syntax-output">${highlighted}</pre>`;
-        console.log('📝 ColumnOriginal: Syntax highlighting applied');
-    }
-
-    loadSample(sampleName) {
-        console.log(`📝 ColumnOriginal: Loading sample ${sampleName}`);
-        
-        if (!sampleName || sampleName === 'custom') {
-            return;
-        }
-
-        const sample = Samples[sampleName];
-        if (sample) {
-            this.htmlContent = sample;
-            const htmlInput = this.querySelector('#html-input');
-            if (htmlInput) {
-                htmlInput.value = sample;
+        if (mode === 'edit') {
+            editContainer.style.display = '';
+            viewContainer.style.display = 'none';
+        } else {
+            editContainer.style.display = 'none';
+            viewContainer.style.display = '';
+            
+            // Sync content to view mode
+            const editMode = this.querySelector('html-edit-mode');
+            const viewMode = this.querySelector('html-view-mode');
+            if (editMode && viewMode) {
+                viewMode.setHtml(editMode.getHtml());
             }
-            this.updateCharCount();
-            
-            // Update view mode if active
-            if (this.mode === 'view') {
-                this.updateSyntaxHighlighting();
-            }
-            
-            this.emitHtmlChanged();
-            
-            this.dispatchEvent(new CustomEvent('sample-selected', {
-                detail: { sample: sampleName },
-                bubbles: true
-            }));
         }
     }
 
-    clearInput() {
-        console.log('📝 ColumnOriginal: Clearing input');
-        this.htmlContent = '';
-        const htmlInput = this.querySelector('#html-input');
-        if (htmlInput) {
-            htmlInput.value = '';
-        }
-        const sampleSelector = this.querySelector('#sample-selector');
-        if (sampleSelector) {
-            sampleSelector.value = 'custom';
-        }
-        this.updateCharCount();
+    // Public API
+    getHtml() {
+        const editMode = this.querySelector('html-edit-mode');
+        return editMode ? editMode.getHtml() : '';
+    }
+
+    setHtml(html) {
+        const editMode = this.querySelector('html-edit-mode');
+        const viewMode = this.querySelector('html-view-mode');
         
-        // Update view mode if active
-        if (this.mode === 'view') {
-            this.updateSyntaxHighlighting();
+        if (editMode) {
+            editMode.setHtml(html);
         }
         
-        this.emitHtmlChanged();
+        if (viewMode && this.mode === 'view') {
+            viewMode.setHtml(html);
+        }
+    }
+
+    clear() {
+        console.log('📝 ColumnOriginal: Clearing');
+        
+        const editMode = this.querySelector('html-edit-mode');
+        const viewMode = this.querySelector('html-view-mode');
+        const sampleSelector = this.querySelector('sample-selector');
+        
+        if (editMode) editMode.clear();
+        if (viewMode) viewMode.clear();
+        if (sampleSelector) sampleSelector.reset();
         
         this.dispatchEvent(new CustomEvent('clear-requested', {
             bubbles: true
         }));
     }
 
-    emitHtmlChanged() {
-        this.dispatchEvent(new CustomEvent('html-changed', {
-            detail: { html: this.htmlContent },
-            bubbles: true
-        }));
-    }
-
-    // Public API
-    getHtml() {
-        return this.htmlContent;
-    }
-
-    setHtml(html) {
-        this.htmlContent = html;
-        const htmlInput = this.querySelector('#html-input');
-        if (htmlInput) {
-            htmlInput.value = html;
-        }
-        this.updateCharCount();
-        if (this.mode === 'view') {
-            this.updateSyntaxHighlighting();
+    loadSample(sampleName) {
+        const sampleSelector = this.querySelector('sample-selector');
+        if (sampleSelector) {
+            // Trigger the sample selector to load
+            const select = sampleSelector.querySelector('#sample-select');
+            if (select) {
+                select.value = sampleName;
+                select.dispatchEvent(new Event('change'));
+            }
         }
     }
 }
 
 customElements.define('column-original', ColumnOriginal);
-console.log('✅ ColumnOriginal component registered');
+console.log('✅ ColumnOriginal component registered (refactored)');

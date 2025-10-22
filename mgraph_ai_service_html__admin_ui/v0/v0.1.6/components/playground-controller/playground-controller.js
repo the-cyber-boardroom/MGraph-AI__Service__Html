@@ -9,7 +9,7 @@
  * - Dispatches results back to components
  */
 
-import { Syntax__Highlighter } from '../../v0.1.4/js/utils/Syntax__Highlighter.js';
+import { Syntax__Highlighter } from '../../../v0.1.4/js/utils/Syntax__Highlighter.js';
 
 class PlaygroundController extends HTMLElement {
     constructor() {
