@@ -1,0 +1,90 @@
+/**
+ * Column Middle Styles - v0.1.6
+ * Dual-view layout for Dict + Hashes
+ */
+
+/* Middle column specific */
+.middle-column .column-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.middle-column .column-mode-view {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+    flex: 1;
+}
+
+.middle-view {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.middle-view-header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.middle-view-content {
+    flex: 1;
+    overflow: auto;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* Edit mode styles */
+.edit-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+}
+
+.edit-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.edit-section-header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-textarea {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    resize: none;
+    overflow: auto;
+    background: white;
+}
+
+.edit-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
