@@ -6,10 +6,13 @@
         active-mode="code"
         column-id="created"
     >
-        <button slot="actions" class="btn-small btn-primary" id="btn-rebuild">🔄 Rebuild</button>
-        <button slot="actions" class="btn-small btn-secondary" id="btn-copy">📋 Copy</button>
-        <button slot="actions" class="btn-small btn-secondary" id="btn-download">⬇ Download</button>
     </column-header>
+
+    <div class="column-actions">
+        <button class="btn-small btn-primary" id="btn-rebuild">🔄 Rebuild</button>
+        <button class="btn-small btn-secondary" id="btn-open-window" style="display: none;">🪟 Open in Window</button>
+        <button class="btn-small btn-secondary" id="btn-download">⬇ Download</button>
+    </div>
 
     <div class="column-content">
         <!-- CODE MODE (default - syntax highlighted view) -->

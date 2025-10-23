@@ -39,7 +39,7 @@ class ColumnCreated extends HTMLElement {
     attachListeners() {
         // Action buttons
         const rebuildBtn = ComponentUtils.$(this, '#btn-rebuild');
-        const copyBtn = ComponentUtils.$(this, '#btn-copy');
+        const openWindowBtn = ComponentUtils.$(this, '#btn-open-window');
         const downloadBtn = ComponentUtils.$(this, '#btn-download');
 
         if (rebuildBtn) {
@@ -49,10 +49,10 @@ class ColumnCreated extends HTMLElement {
             });
         }
 
-        if (copyBtn) {
-            ComponentUtils.on(copyBtn, 'click', () => {
-                console.log('✨ ColumnCreated: Copy button clicked');
-                ComponentUtils.emitEvent(this, 'copy-requested');
+        if (openWindowBtn) {
+            ComponentUtils.on(openWindowBtn, 'click', () => {
+                console.log('✨ ColumnCreated: Open window button clicked');
+                this.openInNewWindow();
             });
         }
 
@@ -84,6 +84,13 @@ class ColumnCreated extends HTMLElement {
         // Update header
         const header = ComponentUtils.$(this, 'column-header');
         header?.setAttribute('active-mode', mode);
+
+        // Show/hide "Open in Window" button based on mode
+        const openWindowBtn = ComponentUtils.$(this, '#btn-open-window');
+        if (openWindowBtn) {
+            // Show button only in preview and split modes
+            ComponentUtils.toggle(openWindowBtn, mode === 'preview' || mode === 'split');
+        }
 
         // Show/hide mode containers
         const codeContainer = ComponentUtils.$(this, '.mode-code');
@@ -163,6 +170,28 @@ class ColumnCreated extends HTMLElement {
      */
     getData() {
         return this.currentHtml;
+    }
+
+    /**
+     * Open current HTML in new window
+     */
+    openInNewWindow() {
+        if (!this.currentHtml) {
+            console.warn('✨ ColumnCreated: No HTML to open in new window');
+            return;
+        }
+
+        const newWindow = window.open('', '_blank', 'width=800,height=600');
+
+        if (newWindow) {
+            newWindow.document.open();
+            newWindow.document.write(this.currentHtml);
+            newWindow.document.close();
+            console.log('✨ ColumnCreated: Opened HTML in new window');
+        } else {
+            console.error('✨ ColumnCreated: Failed to open new window (popup blocked?)');
+            alert('Failed to open new window. Please allow popups for this site.');
+        }
     }
 }
 

@@ -35,18 +35,9 @@ class HtmlPreviewMode extends HTMLElement {
     }
 
     attachListeners() {
-        const refreshBtn = ComponentUtils.$(this, '#refresh-preview');
-        const openWindowBtn = ComponentUtils.$(this, '#open-new-window');
-
-        if (refreshBtn) {
-            ComponentUtils.on(refreshBtn, 'click', () => this.refresh());
-        }
-
-        if (openWindowBtn) {
-            ComponentUtils.on(openWindowBtn, 'click', () => this.openInNewWindow());
-        }
-
-        console.log('🖼️ HtmlPreviewMode: Listeners attached');
+        // No controls in this component anymore
+        // "Open in New Window" button is now in column-header
+        console.log('🖼️ HtmlPreviewMode: Ready (no controls)');
     }
 
     /**

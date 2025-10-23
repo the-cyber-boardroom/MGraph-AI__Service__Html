@@ -32,4 +32,5 @@
     margin: 0;
     white-space: pre-wrap;
     word-wrap: break-word;
+    overflow-wrap : anywhere !important;
 }

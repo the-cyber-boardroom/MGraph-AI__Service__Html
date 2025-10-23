@@ -61,11 +61,12 @@
 .split-top html-view-mode,
 .split-bottom html-preview-mode {
     flex: 1;
-    overflow: hidden;
+    overflow: auto;
+    min-height: 0;
 }
 
 /* Ensure proper sizing in split mode */
 .split-top html-view-mode pre,
 .split-bottom html-preview-mode .preview-container {
-    height: 100%;
+
 }
