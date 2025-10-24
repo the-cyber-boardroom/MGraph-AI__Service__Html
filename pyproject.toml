@@ -8,6 +8,10 @@ readme      = "README.md"
 homepage    = "https://github.com/the-cyber-boardroom/MGraph-AI__Service__Html"
 repository  = "https://github.com/the-cyber-boardroom/MGraph-AI__Service__Html"
 
+packages    = [
+    { include = "mgraph_ai_service_html" },
+    { include = "mgraph_ai_service_html__admin_ui" }
+]
 [tool.poetry.dependencies]
 python                     = "^3.12"
 osbot-fast-api-serverless  = "*"
