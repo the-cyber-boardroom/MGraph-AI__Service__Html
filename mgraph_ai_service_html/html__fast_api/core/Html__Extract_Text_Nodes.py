@@ -13,8 +13,8 @@ class Html__Extract_Text_Nodes(Type_Safe):                      # Extract text n
     captures            : int       = 0                         # Count of captured nodes
     max_depth           : int       = 256                       # Maximum traversal depth
     
-    def capture_text(self, text, tag):                          # Capture text node with hash
-        hash_value = str_md5(text)[:self.hash_size]
+    def capture_text(self, text, tag):                          # Capture text node with hash # todo: add type safe annotations
+        hash_value = str_md5(text)[:self.hash_size]             # todo: refactor hash calculation into separate method
         self.text_elements__raw[hash_value] = text
         self.text_elements[hash_value] = dict(text = text,
                                               tag  = tag )
